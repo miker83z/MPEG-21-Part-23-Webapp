@@ -30,30 +30,24 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">
-            MPEG-21 Media Contract Ontology to
-            <br />
-            Smart Contract
-          </h1>
+          <h1 class="text-center">MPEG-21 Smart Contracts for Media</h1>
           <hr />
-          <br />
         </div>
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <div id="formdiv">
-            <label for="caddr">Contract Address:</label>
-            <input
-              type="text"
-              id="caddr"
-              name="caddr"
-              value="0xAec959Fa5EbF6DCC505643502371e29D93C7a86b"
-              size="42"
-            />
-            <button class="btn btn-danger btn-update" type="button">
-              Update
-            </button>
-            <div id="cstatus">Searching Contract...</div>
-            <a id="clink" href="" target="_blank"></a>
-          </div>
+          <center>
+            MPEG-21 Smart Contract for Media webapp demo, based on Ethereum
+            Smart contracts.
+            <br />
+            This webapp uses some
+            <a href="https://scm.linkeddata.es/api">APIs</a> that are documented
+            using the OpenApi specification in the
+            <a href="https://scm.linkeddata.es/docs">DOCS</a>.
+          </center>
+          <br />
+          A contract represented via the Media Contract Ontology and in a Turtle
+          format is given in input in the top left text area. In the top right
+          text area this contract will be converted into a set of Media
+          Contractual Objects (MPEG-21 part 23).
           <div id="metamask" style="display: none">
             <center>
               <form action="./getmetamask.html" method="get">
@@ -109,58 +103,58 @@
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
           <hr />
-          This is a demo for the MPEG21 MCO to Smart Contract UPM Response to
-          N19504, based on Ethereum Smart contracts. The transformation from an
-          MCO contract into a smart contract is performed by considering
-          payments as transactions and actions to be performed on IP entities in
-          the form of assets, i.e. Non Fungible Tokens
+          At the bottom of this demo:
           <br />
-          In this demo:
+          1) Each MCO contract given in input in the above text area can be
+          converted into a dedicated smart contract.
           <br />
-          1) Each IP entity has its own identifier and a dedicated smart
-          contract.
+          2) This smart contract holds all the infos regarding the MCO contract,
+          including royalties in the form of shared incomes, contract parties
+          (Ethereum addresses) and pointers to Non Fungible Tokens that store
+          the specification of a Permission, Prohibition or Obligation.
           <br />
-          2) It is considered only one smart contract at the address
-          0xBbdA7C2fB654F901B38743A6A6D5afC27497791d of the Ropsten test
-          network. If you are reading here you should have
-          <a id="clink" href="./getmetamask.html" target="_blank"
-            >installed Metamask</a
-          >
-          , so switch to the Ropsten test network in the extension for the
-          correct functioning.
-          <br />
-          3) This smart contract holds all the infos regarding MCO contracts
-          related to this IP entity. Infos consist in a list of MCOContract
-          structures, in which each struct contains parties (Ethereum addresses)
-          and pointers to Non Fungible Tokens.
-          <br />
-          4)
+          3) Non Fungibe Tokens (implemented as
           <a
             id="clink"
             href="https://eips.ethereum.org/EIPS/eip-721"
             target="_blank"
             >ERC721 Tokens</a
+          >) are generally used for assets, debts or virtual collectables
+          (games) and are, together with ERC20, the actual main use case for
+          smart contracts.
+          <br />
+          4) For these tokens only one registry is used, i.e. the smart contract
+          with address 0xAec959Fa5EbF6DCC505643502371e29D93C7a86b of the Ropsten
+          test network. If you are reading here you should have
+          <a id="clink" href="./getmetamask.html" target="_blank"
+            >installed Metamask</a
           >
-          are generally used for assets, debts or virtual collectables (games)
-          and are, together with ERC20, the actual main use case for smart
-          contracts.
+          , please switch to the Ropsten test network in the extension for the
+          correct functioning.
           <br />
-          5) When you click on "Upload MCO Contract to Ethereum Blockchain" a
-          new MCOcontract structure is created within the main smart contract,
-          taking in input the data that it is found on the left editor.
+          5) When you click on "PREPARE Smart Contract for Media" a new
+          structure is created containing all the data needed in input for the
+          smart contract deployment, created from what is found on the top left
+          text area.
           <br />
-          6) The left editor reads JSON-LD files encoded from MCO contracts.
-          Parties are associated to random addresses, while for each
-          DeonticExpression a new ERC721 token is minted. Each token will be
-          assigned to the Permission/Obligation/Prohibition assignee and an URI
-          will point to the action infos.
+          6) Once prepared, on the right will appear the income shares
+          (royalties) that will be deployed with the smart contract. On the
+          basis of those, any payment to one of the parties that will be
+          performed on the blockchain will be shared following the same
+          percentages.
           <br />
-          7) The right editor shows data that is ACTUALLY STORED ON BLOCKCHAIN.
-          Basically all the token issued since the start of the implementation.
+          7) Below the incomes infos, a form for associating each contract party
+          to an Ethereum address will be displayed (i.e. the bindings). Real
+          valid addresses in the Ropsten network can be given in input.
           <br />
-          8) The bottom left editor shows part of the final smart contract
-          created from the information found in the JSON-LD when payments are
-          involved.
+          8) Finally, the "Deploy Smart Contract" button will create a new smart
+          contract containing the infos required for the back conversion.
+          Several ERC721 token are minted and assigned to the
+          Permission/Obligation/Prohibition assignee. The metadata of the token
+          will be stored in IPFS and only the CID (the IPFS hash pointer) will
+          be stored on chain. (Metamask will ask to confirm a new transaction
+          for circa 8-12 times, one for each token to be minted.)
+          <br />
           <hr />
           <br />
         </div>
@@ -169,16 +163,40 @@
 
     <div class="row">
       <div class="col-sm-6"><textarea id="editor3"></textarea></div>
+      <div id="pies" class="col-sm-6">
+        <center><h2>Parties incomes</h2></center>
+      </div>
     </div>
 
     <div class="row">
       <div id="convertbtn" class="col-sm-6">
         <button class="btn btn-primary btn-convert" type="button">
-          Convert MCO Contract to Solidity Payment Smart Contract
+          PREPARE Smart Contract for Media
         </button>
-        <button class="btn btn-success btn-refresh" type="button">
-          Refresh Token List
+        <button
+          id="deploybtn"
+          style="display: none"
+          class="btn btn-success btn-refresh"
+          type="button"
+        >
+          Deploy Smart Contract
         </button>
+        <div id="formdiv">
+          <label for="caddr">Contract Address:</label>
+          <input
+            type="text"
+            id="caddr"
+            name="caddr"
+            value="0xAec959Fa5EbF6DCC505643502371e29D93C7a86b"
+            size="42"
+          />
+          <div id="mcoup">Waiting for deploying contract...</div>
+          <a id="clinkMain" href="" target="_blank"></a>
+        </div>
+      </div>
+      <div id="bindings" class="col-sm-6">
+        <center><h2>Parties address bindings</h2></center>
+        <form id="bindingsForm"></form>
       </div>
     </div>
 
@@ -198,5 +216,13 @@
       type="text/javascript"
       src="https://cdn.rawgit.com/codemirror/CodeMirror/master/mode/javascript/javascript.js"
     ></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script type="text/javascript">
+      google.charts.load('current', { packages: ['corechart'] });
+    </script>
+    <script type="text/javascript" src="js/eth.scm.min.js"></script>
   </body>
 </html>

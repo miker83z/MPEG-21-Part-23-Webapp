@@ -1,17 +1,12 @@
 /* eslint-disable no-undef */
 App = {
   web3Provider: null,
-  contracts: {},
   editor: null,
   editor2: null,
   editor3: null,
-  paymentsBeneficiaries: new Set(),
-  payers: {},
-  incomes: {},
 
   init: async function () {
     const data = await $.get('../templates/use-case-stream-big-label.ttl');
-    App.template = await $.getJSON('../sc.template.json');
     App.accounts = await $.getJSON('../accounts.json');
 
     App.editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
@@ -38,7 +33,7 @@ App = {
       mode: { name: 'javascript' },
       theme: 'base16-dark',
     });
-    App.editor3.setValue('Generating payments smart contract...');
+    App.editor3.setValue('Prepare and then deploy the smart contract...');
     App.editor3.setSize(null, 500);
 
     App.utilsString();
@@ -61,46 +56,9 @@ App = {
       web3 = new Web3(App.web3Provider);
     } catch (error) {
       document.getElementById('metamask').style.display = 'block';
-      document.getElementById('formdiv').style.display = 'none';
-      document.getElementById('uploadbtn').style.display = 'none';
-      App.editor2.setValue('You need an Ethereum provider (Metamask)');
+      document.getElementById('deploybtn').style.display = 'none';
+      App.editor3.setValue('You need an Ethereum provider (Metamask)');
     }
-    const networkId = await App.web3Provider.request({
-      method: 'net_version',
-    });
-    const nfTokenArtifact = await $.getJSON('NFToken.json');
-    $('#caddr').text(nfTokenArtifact.networks[networkId].address);
-
-    return App.initContract();
-  },
-
-  initContract: async function () {
-    try {
-      $('#cstatus').text('Searching NFT Contract...');
-
-      const nfTokenArtifact = await $.getJSON('NFToken.json');
-      const contractAddress = $('#caddr').val();
-
-      // Get the necessary contract artifact file and instantiate it with web3
-      App.contracts.nft = new web3.eth.Contract(
-        nfTokenArtifact.abi,
-        contractAddress
-      );
-      App.contracts.nft.setProvider(App.web3Provider);
-
-      $('#cstatus').text('Contract Found!');
-      $('#clink').text('https://ropsten.etherscan.io/token/' + contractAddress);
-      $('#clink').attr(
-        'href',
-        'https://ropsten.etherscan.io/token/' + contractAddress
-      );
-    } catch (error) {
-      console.log(error);
-      $('#cstatus').text('Contract Error!');
-    }
-
-    // Use our contract to retrieve and show tokens
-    //App.showBalancesList();
 
     return App.bindEvents();
   },
@@ -129,6 +87,18 @@ App = {
     }
   },
 
+  bindEvents: function () {
+    $(document).on(
+      'click',
+      '.btn-contract',
+      App.convertToMediaContractualObjects
+    );
+    $(document).on('click', '.btn-refresh', App.handleUpload);
+    $(document).on('click', '.btn-update', App.initContract);
+    $(document).on('click', '.btn-case', App.setCase);
+    $(document).on('click', '.btn-convert', App.generateSCMData);
+  },
+
   generateSCMData: async function () {
     try {
       event.preventDefault();
@@ -145,11 +115,9 @@ App = {
         },
         data: ttlContract,
       });
+      const contr = JSON.parse(res).contracts[0];
 
-      console.log(res);
-
-      //const res2 = 'cont-r7l4m6TjGxlHw_I0WXnCg0';
-
+      //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
       const res2 = await $.ajax({
         type: 'POST',
         url: 'https://scm.linkeddata.es/api/contracts/',
@@ -159,10 +127,9 @@ App = {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        data: JSON.stringify(JSON.parse(res)),
+        data: JSON.stringify(contr),
       });
-
-      console.log(res2);
+      //console.log(res2);
 
       const res3 = await $.ajax({
         type: 'GET',
@@ -172,242 +139,133 @@ App = {
           Accept: 'application/json',
         },
       });
-
-      console.log(res3);
+      //console.log(res3);
 
       App.editor3.setValue(JSON.stringify(res3, null, 2));
+      document.getElementById('deploybtn').style.display = 'block';
+
+      App.setBindings(res3);
+      return App.setPies(res3);
     } catch (error) {
       console.log(error);
-      $('#cstatus').text('Contract Error!');
     }
   },
 
-  bindEvents: function () {
-    $(document).on(
-      'click',
-      '.btn-contract',
-      App.convertToMediaContractualObjects
-    );
-    $(document).on('click', '.btn-refresh', App.showBalancesList);
-    $(document).on('click', '.btn-update', App.initContract);
-    $(document).on('click', '.btn-case', App.setCase);
-    $(document).on('click', '.btn-convert', App.generateSCMData);
+  setPies(scmObjects) {
+    for (const key in scmObjects.incomePercentage) {
+      var tag = document.createElement('div');
+      tag.style.width = '400px';
+      tag.style.height = '400px';
+      tag.setAttribute('class', 'col-sm-6');
+      var element = document.getElementById('pies');
+      element.appendChild(tag);
+
+      const dataArray = [['Beneficiary', 'Percentage']];
+      let tot = 0;
+      for (const benefKey in scmObjects.incomePercentage[key]) {
+        dataArray.push([benefKey, scmObjects.incomePercentage[key][benefKey]]);
+        tot += scmObjects.incomePercentage[key][benefKey];
+      }
+      tot = 100 - tot;
+      if (tot < 0) {
+        throw new Error('Percentages error');
+      }
+      dataArray.push([key, tot]);
+
+      var data = google.visualization.arrayToDataTable(dataArray);
+
+      var options = {
+        legend: 'none',
+        pieSliceText: 'label',
+        title: `${key}`,
+        pieHole: 0.4,
+      };
+
+      var chart = new google.visualization.PieChart(tag);
+      chart.draw(data, options);
+    }
   },
 
-  showBalancesList: async function () {
-    try {
-      const tokenList = [];
-      const caller = await web3.eth.getAccounts();
+  setBindings(scmObjects) {
+    let accountIndex = 0;
+    for (const key in scmObjects.parties) {
+      /*
+          <div class="form-group row">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control form-control-sm" id="colFormLabelSm" placeholder="col-form-label-sm">
+            </div>
+          </div>
+      */
+      var div = document.createElement('div');
+      div.setAttribute('class', 'form-group row');
+      var label = document.createElement('label');
+      label.setAttribute('for', 'colFormLabelSm');
+      label.setAttribute('class', 'col-sm-2 col-form-label col-form-label-sm');
+      label.innerHTML = key;
+      var div2 = document.createElement('div');
+      div2.setAttribute('class', 'col-sm-10');
+      var input = document.createElement('input');
+      input.setAttribute('type', 'name');
+      input.setAttribute('class', 'form-control form-control-sm');
+      input.setAttribute('value', App.accounts[accountIndex]);
+      div2.appendChild(input);
+      div.appendChild(label);
+      div.appendChild(div2);
+      var element = document.getElementById('bindingsForm');
+      element.appendChild(div);
 
-      const totalSupply = await App.contracts.nft.methods
-        .totalSupply()
-        .call({ from: caller[0] });
-
-      for (i = totalSupply - 1; i >= 0; i--) {
-        const tokenId = await App.contracts.nft.methods
-          .tokenByIndex(i)
-          .call({ from: caller[0] });
-        const tokenURI = await App.contracts.nft.methods
-          .tokenURI(tokenId)
-          .call({ from: caller[0] });
-        const ownerOf = await App.contracts.nft.methods
-          .ownerOf(tokenId)
-          .call({ from: caller[0] });
-        tokenList.push({
-          tokenId: tokenId,
-          ownerOf: ownerOf,
-          tokenURI: tokenURI,
-        });
-        App.editor2.setValue(JSON.stringify(tokenList, null, 2));
-      }
-    } catch (error) {
-      console.log(error);
+      accountIndex = (accountIndex + 1) % 10;
     }
   },
 
   handleUpload: async function (event) {
     event.preventDefault();
 
-    const jsonContract = JSON.parse(App.editor.getValue());
-    if (jsonContract['hasParty'].length > 10) return;
-
-    const parties = {};
-    for (let i = 0; i < jsonContract['hasParty'].length; i++) {
-      parties[jsonContract['hasParty'][i]['@id']] = App.accounts[i + 1];
+    const bindings = {};
+    for (
+      let i = 0;
+      i < document.getElementById('bindingsForm').childNodes.length;
+      i++
+    ) {
+      bindings[
+        document.getElementById('bindingsForm').childNodes[i].textContent
+      ] = document.getElementById('bindingsForm').elements[i].value;
     }
 
-    const caller = await web3.eth.getAccounts();
+    const mediaSC = JSON.parse(App.editor3.getValue());
 
     try {
-      document.getElementById('uploadbtn').style.display = 'none';
       $('#mcoup').text('Uploading MCO Contract...');
-      await App.contracts.ipentity.methods
-        .newMCOContract(
-          web3.utils.asciiToHex(Math.random().toString(36).substring(2)),
-          Object.values(parties)
-        )
-        .send({ from: caller[0] });
 
-      jsonContract.issues.forEach(async (element) => {
-        switch (element['@type'][0]) {
-          case 'mco-core:Obligation':
-            if (element['obligatesAction']['@type'][0] === 'mco-ipre:Payment') {
-              App.handlePayment(element);
-            }
-            await App.contracts.ipentity.methods
-              .newObligation(
-                web3.utils.asciiToHex('hKL30svS0pLsv8hXQ98h23L'),
-                parties[element['obligatesAction']['actedBy']['@id']],
-                JSON.stringify(element['obligatesAction'])
-              )
-              .send({ from: caller[0] });
-            break;
-          case 'mvco:Permission':
-            await App.contracts.ipentity.methods
-              .newPermission(
-                web3.utils.asciiToHex('hKL30svS0pLsv8hXQ98h23L'),
-                parties[element['permitsAction']['actedBy']['@id']],
-                JSON.stringify(element['permitsAction'])
-              )
-              .send({ from: caller[0] });
-            break;
-          case 'mco-core:Prohibition':
-            await App.contracts.ipentity.methods
-              .newProhibition(
-                web3.utils.asciiToHex('hKL30svS0pLsv8hXQ98h23L'),
-                parties[element['permitsAction']['actedBy']['@id']],
-                JSON.stringify(element['forbidsAction'])
-              )
-              .send({ from: caller[0] });
-            break;
-          default:
-            console.log(element['@type']);
-        }
+      const networkId = await App.web3Provider.request({
+        method: 'net_version',
       });
-      App.finalConvert(parties);
+
+      const ipfs = new EthSCM.OffChainStorage();
+      const deployer = new EthSCM.SmartContractDeployer(
+        App.web3Provider,
+        ipfs,
+        mediaSC,
+        bindings,
+        networkId
+      );
+      await deployer.setMainAddress(0);
+      const res = await deployer.deploySmartContracts();
+      const contractAddress = res.options.address;
+      console.log(contractAddress);
+      document.getElementById('deploybtn').style.display = 'block';
+      $('#mcoup').text('Deployed!');
+      $('#clinkMain').text(
+        'https://ropsten.etherscan.io/address/' + contractAddress
+      );
+      $('#clinkMain').attr(
+        'href',
+        'https://ropsten.etherscan.io/address/' + contractAddress
+      );
     } catch (error) {
       console.log(error);
-    } finally {
-      App.paymentsBeneficiaries.clear();
-      for (var member in App.payers) delete App.payers[member];
-      for (var memb in App.incomes) delete App.incomes[memb];
-      document.getElementById('uploadbtn').style.display = 'block';
-      $('#mcoup').text('');
     }
-    return App.showBalancesList();
-  },
-
-  handleConvert: function (event) {
-    event.preventDefault();
-
-    const jsonContract = JSON.parse(App.editor.getValue());
-    if (jsonContract['hasParty'].length > 10) return;
-
-    const parties = {};
-    for (let i = 0; i < jsonContract['hasParty'].length; i++) {
-      parties[jsonContract['hasParty'][i]['@id']] = App.accounts[i + 1];
-    }
-
-    try {
-      document.getElementById('convertbtn').style.display = 'none';
-
-      jsonContract.issues.forEach(async (element) => {
-        if (element['@type'][0] === 'mco-core:Obligation') {
-          if (element['obligatesAction']['@type'][0] === 'mco-ipre:Payment') {
-            App.handlePayment(element);
-          }
-        }
-      });
-
-      App.finalConvert(parties);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      App.paymentsBeneficiaries.clear();
-      for (var member in App.payers) delete App.payers[member];
-      for (var memb in App.incomes) delete App.incomes[memb];
-      document.getElementById('convertbtn').style.display = 'block';
-    }
-  },
-
-  handlePayment: function (element) {
-    const benef = element['obligatesAction']['mco-pane:hasBeneficiary']['@id'];
-    App.paymentsBeneficiaries.add(benef);
-
-    if (element['obligatesAction']['mco-pane:hasAmount']) {
-      const payer = element['obligatesAction']['actedBy']['@id'];
-      if (App.payers[payer] === undefined) {
-        App.payers[payer] = [];
-      }
-      App.payers[payer].push({
-        amount: element['obligatesAction']['mco-pane:hasAmount'],
-        beneficiary: benef,
-        isCustomer: payer === 'Consumer',
-      });
-    } else if (element['obligatesAction']['mco-pane:hasIncomePercentage']) {
-      const payer = element['obligatesAction']['actedBy']['@id'];
-      if (App.incomes[payer] === undefined) {
-        App.incomes[payer] = [];
-      }
-      App.incomes[payer].push({
-        incomePercentage:
-          element['obligatesAction']['mco-pane:hasIncomePercentage'],
-        beneficiary: benef,
-      });
-    }
-  },
-
-  finalConvert: function (parties) {
-    let incomeFunctions = '';
-    let payFunctions = '';
-    let strictPayFunctions = '';
-
-    App.paymentsBeneficiaries.forEach((benef) => {
-      let hasIncomes = false;
-      if (App.incomes[benef]) {
-        hasIncomes = true;
-        receiversString = '';
-        App.incomes[benef].forEach((inc) => {
-          receiversString += App.template.incomePayCode.format(
-            inc.incomePercentage,
-            inc.beneficiary
-          );
-        });
-        incomeFunctions +=
-          '\n' +
-          App.template.incomePercentage.format(benef, receiversString) +
-          '\n';
-      }
-      const payFunct = hasIncomes
-        ? App.template.pay.format(benef, parties[benef])
-        : App.template.pay_no_income.format(benef, parties[benef]);
-      payFunctions += '\n' + payFunct + '\n';
-    });
-
-    Object.keys(App.payers).forEach((payer) => {
-      App.payers[payer].forEach((strictPay) => {
-        const isCustomer = strictPay.isCustomer
-          ? ''
-          : App.template.payFromRequire.format(parties[payer]);
-        strictPayFunctions +=
-          '\n' +
-          App.template.payFrom.format(
-            strictPay.beneficiary,
-            payer,
-            strictPay.amount,
-            isCustomer
-          ) +
-          '\n';
-      });
-    });
-
-    App.editor3.setValue(
-      App.template.completeContract.format(
-        payFunctions,
-        incomeFunctions,
-        strictPayFunctions
-      )
-    );
   },
 
   setCase: async function (event) {
