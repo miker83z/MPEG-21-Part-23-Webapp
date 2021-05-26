@@ -1,0 +1,54 @@
+
+> smartcontracts-for-media-webapp@0.5.0 dev
+> lite-server
+
+** browser-sync config **
+{
+  injectChanges: false,
+  files: [ '.src/**/*.{html,htm,css,js,ttl}' ],
+  watchOptions: { ignored: 'node_modules' },
+  server: {
+    baseDir: [ './src' ],
+    middleware: [ [Function (anonymous)], [Function (anonymous)] ]
+  },
+  port: 8022,
+  ghostMode: false,
+  open: false
+}
+[Browsersync] Access URLs:
+ ----------------------------------------
+       Local: http://localhost:8025
+    External: http://192.168.122.232:8025
+ ----------------------------------------
+          UI: http://localhost:3004
+ UI External: http://localhost:3004
+ ----------------------------------------
+[Browsersync] Serving files from: ./src
+[Browsersync] Watching files...
+
+> smartcontracts-for-media-webapp@0.5.0 dev
+> lite-server
+
+** browser-sync config **
+{
+  injectChanges: false,
+  files: [ '.src/**/*.{html,htm,css,js,ttl}' ],
+  watchOptions: { ignored: 'node_modules' },
+  server: {
+    baseDir: [ './src' ],
+    middleware: [ [Function (anonymous)], [Function (anonymous)] ]
+  },
+  port: 8022,
+  ghostMode: false,
+  open: false
+}
+[Browsersync] Access URLs:
+ ----------------------------------------
+       Local: http://localhost:8026
+    External: http://192.168.122.232:8026
+ ----------------------------------------
+          UI: http://localhost:3005
+ UI External: http://localhost:3005
+ ----------------------------------------
+[Browsersync] Serving files from: ./src
+[Browsersync] Watching files...
