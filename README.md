@@ -1,5 +1,3 @@
-# MPEG-21 Media Contract Ontology to Smart Contracts 
+# MPEG-21 Smart Contracts for Media
 
-This is a demo for the [MPEG21 MCO to Smart Contract UPM Response to N19504](http://cosasbuenas.es/mpeg/), based on Ethereum Smart contracts. The transformation from an
-MCO contract into a smart contract is performed by considering payments as transactions and actions to be performed on IP entities in 
-the form of assets, i.e. Non Fungible Tokens
+This is a demo for the Smart Contracts for Media based on Ethereum Smart contracts

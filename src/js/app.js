@@ -146,6 +146,8 @@ App = {
         data: ttlContract,
       });
 
+      console.log(res);
+
       //const res2 = 'cont-r7l4m6TjGxlHw_I0WXnCg0';
 
       const res2 = await $.ajax({
@@ -157,7 +159,7 @@ App = {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        data: res,
+        data: JSON.stringify(JSON.parse(res)),
       });
 
       console.log(res2);
