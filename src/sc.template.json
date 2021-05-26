@@ -1,0 +1,9 @@
+{
+  "pay": "\tfunction pay_to_{0}(uint256 value) public payable {\n\t\taddress payable beneficiary = {1};\n\t\tuint256 final_value = _income_percentage_{0}(value);\n\t\tbeneficiary.transfer(final_value);\n\t}\n",
+  "pay_no_income": "\tfunction pay_to_{0}(uint256 value) public payable {\n\t\taddress payable beneficiary = {1};\n\t\tbeneficiary.transfer(value);\n\t}\n",
+  "incomePayCode": "\n\t\tamount = value.mul({0}).div(100);\n\t\tpay_to_{1}(amount);\n\t\tfinal_value = final_value.sub(amount);\n",
+  "incomePercentage": "\tfunction _income_percentage_{0}(uint256 value) private returns (uint256) {\n\t\tuint256 final_value = value;\n\t\tuint256 amount;\n{1}\n\t\treturn final_value;\n\t}\n",
+  "payFrom": "\tfunction pay_to_{0}_from_{1}() public payable {\n{3}\t\tpay_to_{0}({2});\n\t}\n",
+  "payFromRequire": "\t\trequire(msg.sender == {0});\n",
+  "completeContract": "// SPDX-License-Identifier: MIT\npragma solidity ^0.6.0;\n\nimport \"@openzeppelin/contracts/math/SafeMath.sol\";\n\ncontract Payments {\n\tusing SafeMath for uint256;\n\n\t// IPEntity smart contract address on chain\n\taddress private _ipEntityContractAddress;\n\n\t// MCO contract unique identifier\n\tbytes private _contractId;\n\n\tconstructor(address ipEntityContractAddress, bytes memory mcoContractId)\n\t\tpublic\n\t{\n\t\t_ipEntityContractAddress = ipEntityContractAddress;\n\t\t_contractId = mcoContractId;\n\t}\n{0}\n{1}\n{2}\n}\n"
+}
