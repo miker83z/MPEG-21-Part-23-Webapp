@@ -152,12 +152,15 @@ App = {
   },
 
   setPies(scmObjects) {
+    var element = document.getElementById('pies');
+    while (element.hasChildNodes()) {
+      element.removeChild(element.lastChild);
+    }
     for (const key in scmObjects.incomePercentage) {
       var tag = document.createElement('div');
       tag.style.width = '400px';
       tag.style.height = '400px';
       tag.setAttribute('class', 'col-sm-6');
-      var element = document.getElementById('pies');
       element.appendChild(tag);
 
       const dataArray = [['Beneficiary', 'Percentage']];
@@ -187,6 +190,10 @@ App = {
   },
 
   setBindings(scmObjects) {
+    var element = document.getElementById('bindingsForm');
+    while (element.hasChildNodes()) {
+      element.removeChild(element.lastChild);
+    }
     let accountIndex = 0;
     for (const key in scmObjects.parties) {
       /*
@@ -212,7 +219,6 @@ App = {
       div2.appendChild(input);
       div.appendChild(label);
       div.appendChild(div2);
-      var element = document.getElementById('bindingsForm');
       element.appendChild(div);
 
       accountIndex = (accountIndex + 1) % 10;
