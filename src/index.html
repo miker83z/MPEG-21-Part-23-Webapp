@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>MPEG21 MCO SC</title>
+    <title>ISO/IEC 21000-23 Smart Contracts for Media</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -30,38 +30,10 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">MPEG-21 Smart Contracts for Media</h1>
+          <h1 class="text-center">
+            ISO/IEC 21000-23 Smart Contracts for Media
+          </h1>
           <hr />
-        </div>
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <center>
-            MPEG-21 Smart Contract for Media webapp demo, based on Ethereum
-            Smart contracts.
-            <br />
-            This webapp uses some
-            <a href="https://scm.linkeddata.es/api">APIs</a> that are documented
-            using the OpenApi specification in the
-            <a href="https://scm.linkeddata.es/docs">DOCS</a>.
-          </center>
-          <br />
-          A contract represented via the Media Contract Ontology and in a Turtle
-          format is given in input in the top left text area. In the top right
-          text area this contract will be converted into a set of Media
-          Contractual Objects (MPEG-21 part 23).
-          <div id="metamask" style="display: none">
-            <center>
-              <form action="./getmetamask.html" method="get">
-                <button
-                  class="btn btn-success btn-update btn-block"
-                  type="submit"
-                >
-                  HOW TO SETUP METAMASK!
-                </button>
-              </form>
-            </center>
-          </div>
-          <hr />
-          <br />
         </div>
       </div>
     </div>
@@ -73,24 +45,80 @@
 
     <div class="row">
       <div class="col-sm-6">
-        <button class="btn btn-default btn-case" type="button" data-id="0">
-          On demand stream - Big labels
-        </button>
-        <button class="btn btn-default btn-case" type="button" data-id="1">
-          On demand stream - Indie labels
-        </button>
-        <button class="btn btn-default btn-case" type="button" data-id="2">
-          On demand stream - Self-released
-        </button>
-        <button class="btn btn-default btn-case" type="button" data-id="3">
-          Digital sale - Big labels
-        </button>
-        <button class="btn btn-default btn-case" type="button" data-id="4">
-          Digital sale - Indie labels
-        </button>
-        <button class="btn btn-default btn-case" type="button" data-id="5">
-          Digital sale - Self-released
-        </button>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-success btn-case" data-id="0">
+            <input
+              type="radio"
+              name="options"
+              id="option1"
+              autocomplete="off"
+              checked
+            />
+            CEL
+          </label>
+          <label class="btn btn-success btn-case active" data-id="1">
+            <input
+              type="radio"
+              name="options"
+              id="option2"
+              autocomplete="off"
+            />
+            MCO
+          </label>
+        </div>
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-warning btn-case active" data-id="2">
+            <input
+              type="radio"
+              name="options"
+              id="option1"
+              autocomplete="off"
+              checked
+            />
+            On demand stream
+          </label>
+          <label class="btn btn-warning btn-case" data-id="3">
+            <input
+              type="radio"
+              name="options"
+              id="option2"
+              autocomplete="off"
+            />
+            Digital sale
+          </label>
+        </div>
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-primary btn-case" data-id="4">
+            <input
+              type="radio"
+              name="options"
+              id="option1"
+              autocomplete="off"
+              checked
+            />
+            Big labels
+          </label>
+          <label class="btn btn-primary btn-case active" data-id="5">
+            <input
+              type="radio"
+              name="options"
+              id="option2"
+              autocomplete="off"
+            />
+            Indie labels
+          </label>
+          <label class="btn btn-primary btn-case" data-id="6">
+            <input
+              type="radio"
+              name="options"
+              id="option3"
+              autocomplete="off"
+            />
+            Self-released
+          </label>
+        </div>
       </div>
       <div id="convertotomcobtn" class="col-sm-6">
         <button class="btn btn-primary btn-contract" type="button">
@@ -99,19 +127,96 @@
       </div>
     </div>
 
+    <br />
+
+    <div class="row">
+      <div class="col-sm-6"><textarea id="editor3"></textarea></div>
+      <div id="incomes" class="col-sm-6">
+        <center><h2>Parties Incomes Splits</h2></center>
+        <div id="pies"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div id="convertbtn" class="col-sm-6">
+        <button class="btn btn-primary btn-convert" type="button">
+          Prepare Smart Contract for Media
+        </button>
+        <button
+          id="deploybtn"
+          style="display: none"
+          class="btn btn-success btn-refresh"
+          type="button"
+        >
+          Deploy Smart Contract for Media
+        </button>
+        <div id="formdiv">
+          <label for="caddr">Contract Address:</label>
+          <input
+            type="text"
+            id="caddr"
+            name="caddr"
+            value="0xAec959Fa5EbF6DCC505643502371e29D93C7a86b"
+            size="42"
+          />
+          <div id="mcoup">Waiting for deploying contract...</div>
+          <a id="clinkMain" href="" target="_blank"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div id="bindings" class="col-sm-6">
+        <center><h2>Parties Address Bindings</h2></center>
+        <form id="bindingsForm"></form>
+      </div>
+    </div>
+
     <div class="container">
+      <br />
+      <hr />
+      <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <center>
+          ISO/IEC 21000-23 Smart Contract for Media webapp demo, based on
+          Ethereum Smart contracts.
+          <br />
+          This webapp uses some
+          <a href="https://scm.linkeddata.es/api">APIs</a> that are documented
+          using the OpenApi specification in the
+          <a href="https://scm.linkeddata.es/docs">DOCS</a>.
+        </center>
+        <br />
+        A contract represented via the ISO/IEC 21000-20 (2nd Ed) Contract
+        Expression Language (CEL) in an XML format or via the ISO/IEC 21000-21
+        (2nd Ed) Media Contract Ontology (MCO) in a Turtle format is given in
+        input in the top left side text area. In the top right side text area
+        this contract will be converted into a set of Media Contractual Objects
+        defined in the ISO/IEC 21000-23 Smart Contract for Media specification.
+        <div id="metamask" style="display: none">
+          <center>
+            <form action="./getmetamask.html" method="get">
+              <button
+                class="btn btn-success btn-update btn-block"
+                type="submit"
+              >
+                HOW TO SETUP METAMASK!
+              </button>
+            </form>
+          </center>
+        </div>
+      </div>
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
           <hr />
-          At the bottom of this demo:
+          At lower part of this demo:
           <br />
-          1) Each MCO contract given in input in the above text area can be
+          1) Each CEL/MCO contract given in input in the above text area can be
           converted into a dedicated smart contract.
           <br />
-          2) This smart contract holds all the infos regarding the MCO contract,
-          including royalties in the form of shared incomes, contract parties
-          (Ethereum addresses) and pointers to Non Fungible Tokens that store
-          the specification of a Permission, Prohibition or Obligation.
+          2) This smart contract holds all the infos regarding the CEL/MCO
+          contract, including royalties in the form of shared incomes, contract
+          parties (Ethereum addresses) and pointers to Non Fungible Tokens that
+          store the specification of a Permission, Prohibition or Obligation.
           <br />
           3) Non Fungibe Tokens (implemented as
           <a
@@ -132,7 +237,7 @@
           , please switch to the Ropsten test network in the extension for the
           correct functioning.
           <br />
-          5) When you click on "PREPARE Smart Contract for Media" a new
+          5) When you click on "Prepare Smart Contract for Media" a new
           structure is created containing all the data needed in input for the
           smart contract deployment, created from what is found on the top left
           text area.
@@ -158,46 +263,6 @@
           <hr />
           <br />
         </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6"><textarea id="editor3"></textarea></div>
-      <div id="incomes" class="col-sm-6">
-        <center><h2>Parties incomes</h2></center>
-        <div id="pies"></div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div id="convertbtn" class="col-sm-6">
-        <button class="btn btn-primary btn-convert" type="button">
-          PREPARE Smart Contract for Media
-        </button>
-        <button
-          id="deploybtn"
-          style="display: none"
-          class="btn btn-success btn-refresh"
-          type="button"
-        >
-          Deploy Smart Contract
-        </button>
-        <div id="formdiv">
-          <label for="caddr">Contract Address:</label>
-          <input
-            type="text"
-            id="caddr"
-            name="caddr"
-            value="0xAec959Fa5EbF6DCC505643502371e29D93C7a86b"
-            size="42"
-          />
-          <div id="mcoup">Waiting for deploying contract...</div>
-          <a id="clinkMain" href="" target="_blank"></a>
-        </div>
-      </div>
-      <div id="bindings" class="col-sm-6">
-        <center><h2>Parties address bindings</h2></center>
-        <form id="bindingsForm"></form>
       </div>
     </div>
 

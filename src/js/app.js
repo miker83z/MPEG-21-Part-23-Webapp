@@ -4,9 +4,53 @@ App = {
   editor: null,
   editor2: null,
   editor3: null,
+  celmco: 1,
+  ondemsale: 0,
+  label: 1,
+  templatesCube: [],
+
+  fillTemplatesCube: function () {
+    const celStream = [];
+    const celSale = [];
+    const mcoStream = [];
+    const mcoSale = [];
+
+    celStream.push('../templates/cel/use-case-stream-big-label.xml');
+    celStream.push('../templates/cel/use-case-stream-small-label.xml');
+    celStream.push('../templates/cel/use-case-stream-no-label.xml');
+    celSale.push('../templates/cel/use-case-download-big-label.xml');
+    celSale.push('../templates/cel/use-case-download-small-label.xml');
+    celSale.push('../templates/cel/use-case-download-no-label.xml');
+    mcoStream.push('../templates/mco/use-case-stream-big-label.ttl');
+    mcoStream.push('../templates/mco/use-case-stream-small-label.ttl');
+    mcoStream.push('../templates/mco/use-case-stream-no-label.ttl');
+    mcoSale.push('../templates/mco/use-case-download-big-label.ttl');
+    mcoSale.push('../templates/mco/use-case-download-small-label.ttl');
+    mcoSale.push('../templates/mco/use-case-download-no-label.ttl');
+
+    const cel = [];
+    cel.push(celStream);
+    cel.push(celSale);
+    const mco = [];
+    mco.push(mcoStream);
+    mco.push(mcoSale);
+
+    App.templatesCube.push(cel);
+    App.templatesCube.push(mco);
+  },
+
+  getTemplate: function (x, y, z) {
+    return App.templatesCube[x][y][z];
+  },
 
   init: async function () {
-    const data = await $.get('../templates/use-case-stream-big-label.ttl');
+    App.fillTemplatesCube();
+    const firstToDisplay = App.getTemplate(
+      App.celmco,
+      App.ondemsale,
+      App.label
+    );
+    const data = await $.get(firstToDisplay);
     App.accounts = await $.getJSON('../accounts.json');
 
     App.editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
@@ -277,31 +321,39 @@ App = {
   setCase: async function (event) {
     event.preventDefault();
     var petId = parseInt($(event.target).data('id'));
-    var jsonFile = '';
 
     switch (petId) {
       case 0:
-        jsonFile = '../templates/use-case-stream-big-label.ttl';
+        App.celmco = 0;
         break;
       case 1:
-        jsonFile = '../templates/use-case-stream-small-label.ttl';
+        App.celmco = 1;
         break;
       case 2:
-        jsonFile = '../templates/use-case-stream-no-label.ttl';
+        App.ondemsale = 0;
         break;
       case 3:
-        jsonFile = '../templates/use-case-download-big-label.ttl';
+        App.ondemsale = 1;
         break;
       case 4:
-        jsonFile = '../templates/use-case-download-small-label.ttl';
+        App.label = 0;
         break;
       case 5:
-        jsonFile = '../templates/use-case-download-no-label.ttl';
+        App.label = 1;
+        break;
+      case 6:
+        App.label = 2;
         break;
       default:
         break;
     }
-    const data = await $.get(jsonFile);
+
+    const jsonFile = App.getTemplate(App.celmco, App.ondemsale, App.label);
+    console.log(jsonFile);
+    var data = await $.get(jsonFile);
+    if (App.celmco === 0) {
+      data = new XMLSerializer().serializeToString(data);
+    }
     App.editor.setValue(data);
   },
 

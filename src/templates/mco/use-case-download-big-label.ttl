@@ -7,6 +7,11 @@
 @prefix mco-pane: <urn:mpeg:mpeg21:mco:pane:2015#> .
 @prefix mco-rele: <urn:mpeg:mpeg21:mco:rele:2015#> .
 
+<http://mpeg.org/contract4>
+        a                  mco-core:Contract ;
+        rdfs:label         "CONTRACT 4 - Digital sale - Big labels. For record labels that have a direct deal with record labels." ;
+        mco-core:hasParty  <http://mpeg.org/RecordLabel> , <http://mpeg.org/Musicians> , <http://mpeg.org/SongWriter> , <http://mpeg.org/DigitalSale> , <http://mpeg.org/Publisher> , <http://mpeg.org/Consumer> , <http://mpeg.org/ArtistBand> .
+
 <http://mpeg.org/action2>
         a               mvco:distribute ;
         rdfs:label      "Digital Sale distributes a song" ;
@@ -198,7 +203,3 @@
         mvco:issuedBy             <http://mpeg.org/Consumer> ;
         mco-core:obligatesAction  <http://mpeg.org/pay1> .
 
-<http://mpeg.org/contract4>
-        a                  mco-core:Contract ;
-        rdfs:label         "CONTRACT 4 - Digital sale - Big labels. For record labels that have a direct deal with record labels." ;
-        mco-core:hasParty  <http://mpeg.org/RecordLabel> , <http://mpeg.org/Musicians> , <http://mpeg.org/SongWriter> , <http://mpeg.org/DigitalSale> , <http://mpeg.org/Publisher> , <http://mpeg.org/Consumer> , <http://mpeg.org/ArtistBand> .
