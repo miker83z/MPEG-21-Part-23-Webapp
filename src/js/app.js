@@ -143,53 +143,83 @@ App = {
     $(document).on('click', '.btn-convert', App.generateSCMData);
   },
 
-  generateSCMData: async function () {
+  generateSCMDataCEL: async function () {
     try {
-      event.preventDefault();
-
-      const ttlContract = App.editor.getValue();
+      App.editor3.setValue(
+        'Wait for a few seconds, while uploading the smart contract to the blockchain...'
+      );
+      const reqData = App.ondemsale * 3 + App.label;
       const res = await $.ajax({
         type: 'POST',
-        url: 'https://scm.linkeddata.es/api/parser/mco',
+        url: 'http://localhost:5000',
+        crossDomain: true,
         contentType: 'text/plain; charset=utf-8',
         dataType: 'text',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'text/plain',
         },
-        data: ttlContract,
+        data: reqData.toString(),
       });
-      const contr = JSON.parse(res).contracts[0];
+      console.log(res);
 
-      //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
-      const res2 = await $.ajax({
-        type: 'POST',
-        url: 'https://scm.linkeddata.es/api/contracts/',
-        contentType: 'application/json; charset=UFT-8',
-        dataType: 'json',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        data: JSON.stringify(contr),
-      });
-      //console.log(res2);
+      App.editor3.setValue(res);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
-      const res3 = await $.ajax({
-        type: 'GET',
-        url: `https://scm.linkeddata.es/api/eth/generate/${res2.contractIdref}`,
-        crossDomain: true,
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-      //console.log(res3);
+  generateSCMData: async function () {
+    try {
+      event.preventDefault();
 
-      App.editor3.setValue(JSON.stringify(res3, null, 2));
-      document.getElementById('deploybtn').style.display = 'block';
+      if (App.celmco === 0) {
+        App.generateSCMDataCEL();
+      } else {
+        const ttlContract = App.editor.getValue();
+        const res = await $.ajax({
+          type: 'POST',
+          url: 'https://scm.linkeddata.es/api/parser/mco',
+          contentType: 'text/plain; charset=utf-8',
+          dataType: 'text',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'text/plain',
+          },
+          data: ttlContract,
+        });
+        const contr = JSON.parse(res).contracts[0];
 
-      App.setBindings(res3);
-      return App.setPies(res3);
+        //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
+        const res2 = await $.ajax({
+          type: 'POST',
+          url: 'https://scm.linkeddata.es/api/contracts/',
+          contentType: 'application/json; charset=UFT-8',
+          dataType: 'json',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          data: JSON.stringify(contr),
+        });
+        //console.log(res2);
+
+        const res3 = await $.ajax({
+          type: 'GET',
+          url: `https://scm.linkeddata.es/api/eth/generate/${res2.contractIdref}`,
+          crossDomain: true,
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+        //console.log(res3);
+
+        App.editor3.setValue(JSON.stringify(res3, null, 2));
+        document.getElementById('deploybtn').style.display = 'block';
+
+        App.setBindings(res3);
+        return App.setPies(res3);
+      }
     } catch (error) {
       console.log(error);
     }
