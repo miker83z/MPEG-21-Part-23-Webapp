@@ -39,91 +39,103 @@
     </div>
 
     <div class="row">
+      <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <h1 class="text-center">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-success btn-case btn-lg" data-id="0">
+              <input
+                type="radio"
+                name="options"
+                id="option1"
+                autocomplete="off"
+                checked
+              />
+              CEL
+            </label>
+            <label class="btn btn-success btn-case btn-lg active" data-id="1">
+              <input
+                type="radio"
+                name="options"
+                id="option2"
+                autocomplete="off"
+              />
+              MCO
+            </label>
+          </div>
+          <br />
+
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-warning btn-case btn-lg active" data-id="2">
+              <input
+                type="radio"
+                name="options"
+                id="option1"
+                autocomplete="off"
+                checked
+              />
+              On demand stream
+            </label>
+            <label class="btn btn-warning btn-case btn-lg" data-id="3">
+              <input
+                type="radio"
+                name="options"
+                id="option2"
+                autocomplete="off"
+              />
+              Digital sale
+            </label>
+          </div>
+          <br />
+
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary btn-case btn-lg" data-id="4">
+              <input
+                type="radio"
+                name="options"
+                id="option1"
+                autocomplete="off"
+                checked
+              />
+              Big labels
+            </label>
+            <label class="btn btn-primary btn-case btn-lg active" data-id="5">
+              <input
+                type="radio"
+                name="options"
+                id="option2"
+                autocomplete="off"
+              />
+              Indie labels
+            </label>
+            <label class="btn btn-primary btn-case btn-lg" data-id="6">
+              <input
+                type="radio"
+                name="options"
+                id="option3"
+                autocomplete="off"
+              />
+              Self-released
+            </label>
+          </div>
+        </h1>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="row">
       <div class="col-sm-6"><textarea id="editor"></textarea></div>
       <div class="col-sm-6"><textarea id="editor2"></textarea></div>
     </div>
 
     <div class="row">
+      <div id="bo" class="col-sm-6"></div>
       <div class="col-sm-6">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-success btn-case" data-id="0">
-            <input
-              type="radio"
-              name="options"
-              id="option1"
-              autocomplete="off"
-              checked
-            />
-            CEL
-          </label>
-          <label class="btn btn-success btn-case active" data-id="1">
-            <input
-              type="radio"
-              name="options"
-              id="option2"
-              autocomplete="off"
-            />
-            MCO
-          </label>
+        <div id="convertotomcobtn" class="col-sm-6">
+          <button class="btn btn-primary btn-contract" type="button">
+            Convert to Media Contractual Objects
+          </button>
         </div>
-
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-warning btn-case active" data-id="2">
-            <input
-              type="radio"
-              name="options"
-              id="option1"
-              autocomplete="off"
-              checked
-            />
-            On demand stream
-          </label>
-          <label class="btn btn-warning btn-case" data-id="3">
-            <input
-              type="radio"
-              name="options"
-              id="option2"
-              autocomplete="off"
-            />
-            Digital sale
-          </label>
-        </div>
-
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-primary btn-case" data-id="4">
-            <input
-              type="radio"
-              name="options"
-              id="option1"
-              autocomplete="off"
-              checked
-            />
-            Big labels
-          </label>
-          <label class="btn btn-primary btn-case active" data-id="5">
-            <input
-              type="radio"
-              name="options"
-              id="option2"
-              autocomplete="off"
-            />
-            Indie labels
-          </label>
-          <label class="btn btn-primary btn-case" data-id="6">
-            <input
-              type="radio"
-              name="options"
-              id="option3"
-              autocomplete="off"
-            />
-            Self-released
-          </label>
-        </div>
-      </div>
-      <div id="convertotomcobtn" class="col-sm-6">
-        <button class="btn btn-primary btn-contract" type="button">
-          Convert to Media Contractual Objects
-        </button>
       </div>
     </div>
 
@@ -132,7 +144,7 @@
     <div class="row">
       <div class="col-sm-6"><textarea id="editor3"></textarea></div>
       <div id="incomes" class="col-sm-6">
-        <center><h2>Parties Incomes Splits</h2></center>
+        <center><h2>Royalties Distribution</h2></center>
         <div id="pies"></div>
       </div>
     </div>
@@ -167,7 +179,9 @@
 
     <div class="row">
       <div id="bindings" class="col-sm-6">
-        <center><h2>Parties Address Bindings</h2></center>
+        <center>
+          <h2>MPEG-21 CEL/MCO Parties and DLT Addresses Bindings</h2>
+        </center>
         <form id="bindingsForm"></form>
       </div>
     </div>

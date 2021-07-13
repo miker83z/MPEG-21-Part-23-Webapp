@@ -232,8 +232,8 @@ App = {
     }
     for (const key in scmObjects.incomePercentage) {
       var tag = document.createElement('div');
-      tag.style.width = '400px';
-      tag.style.height = '400px';
+      tag.style.width = '450px';
+      tag.style.height = '450px';
       tag.setAttribute('class', 'col-sm-6');
       element.appendChild(tag);
 
