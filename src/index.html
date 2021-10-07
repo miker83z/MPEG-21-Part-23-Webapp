@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>ISO/IEC 21000-23 Smart Contracts for Media</title>
+    <title>ISO/IEC 21000-23 MPEG-21 Smart Contracts for Media</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" />
@@ -171,6 +171,13 @@
             value="0xAec959Fa5EbF6DCC505643502371e29D93C7a86b"
             size="42"
           />
+          <button
+            id="parsebtn"
+            class="btn btn-success btn-refresh"
+            type="button"
+          >
+            Parse Smart Contract for Media
+          </button>
           <div id="mcoup">Waiting for deploying contract...</div>
           <a id="clinkMain" href="" target="_blank"></a>
         </div>
@@ -191,21 +198,13 @@
       <hr />
       <div class="col-xs-12 col-sm-8 col-sm-push-2">
         <center>
-          ISO/IEC 21000-23 Smart Contract for Media webapp demo, based on
-          Ethereum Smart contracts.
+          <h2>ISO/IEC 21000-23 Smart Contract for Media demo</h2>
           <br />
-          This webapp uses some
-          <a href="https://scm.linkeddata.es/api">APIs</a> that are documented
-          using the OpenApi specification in the
-          <a href="https://scm.linkeddata.es/docs">DOCS</a>.
+          This webapp uses the ISO/IEC 21000-23 Smart Contracts for Media APIs
+          (<a href="https://scm.linkeddata.es/docs">specification</a> and
+          <a href="https://scm.linkeddata.es/api">reference software</a>).
         </center>
         <br />
-        A contract represented via the ISO/IEC 21000-20 (2nd Ed) Contract
-        Expression Language (CEL) in an XML format or via the ISO/IEC 21000-21
-        (2nd Ed) Media Contract Ontology (MCO) in a Turtle format is given in
-        input in the top left side text area. In the top right side text area
-        this contract will be converted into a set of Media Contractual Objects
-        defined in the ISO/IEC 21000-23 Smart Contract for Media specification.
         <div id="metamask" style="display: none">
           <center>
             <form action="./getmetamask.html" method="get">
@@ -222,57 +221,61 @@
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
           <hr />
-          At lower part of this demo:
+          On the upper part left hand side, a window is shown where different
+          MPEG-21 CEL/MCO template contracts can be chosen. These contract
+          templates can be represented in the ISO/IEC 21000-20 (2nd Ed) Contract
+          Expression Language (CEL) in an XML format or in the ISO/IEC 21000-21
+          (2nd Ed) Media Contract Ontology (MCO) in an RDF (Turtle) format. On
+          the upper part right hand side, a window is shown where Media
+          Contractual Objects are displayed by clicking the button “Convert to
+          Media Contractual Objects”. On the lower part left hand side, a window
+          is shown where the generated Smart Contract Specification is displayed
+          by clicking the button “Prepare Smart Contract for Media”. Below this
+          window, the bindings between MPEG-21 CEL/MCO Parties and DLT Addresses
+          are also shown. On the lower part right hand side, data are shown in
+          the form of doughnut charts with respect to the revenue percentages of
+          each party involved in the distribution of royalties (e.g., splits).
           <br />
-          1) Each CEL/MCO contract given in input in the above text area can be
-          converted into a dedicated smart contract.
+          <h3>Ethereum</h3>
           <br />
-          2) This smart contract holds all the infos regarding the CEL/MCO
-          contract, including royalties in the form of shared incomes, contract
-          parties (Ethereum addresses) and pointers to Non Fungible Tokens that
-          store the specification of a Permission, Prohibition or Obligation.
+          1) Each MPEG-21 CEL/MCO Contract given as input in the upper part left
+          hand side window can be converted into a dedicated Ethereum smart
+          contract.
           <br />
-          3) Non Fungibe Tokens (implemented as
+          2) This smart contract, that it is refered as Smart Contract for
+          Media, holds all the information regarding the MPEG-21 CEL/MCO
+          Contract, including: revenue percentages of each party involved in the
+          distribution of royalties, Ethereum addresses representing the parties
+          in the contract and deontic expressions related to the contract, such
+          as permissions, prohibitions or obligations stored through Non
+          Fungible Tokens (NFTs, implemented as
           <a
             id="clink"
             href="https://eips.ethereum.org/EIPS/eip-721"
             target="_blank"
             >ERC721 Tokens</a
-          >) are generally used for assets, debts or virtual collectables
-          (games) and are, together with ERC20, the actual main use case for
-          smart contracts.
+          >).
           <br />
-          4) For these tokens only one registry is used, i.e. the smart contract
-          with address 0xAec959Fa5EbF6DCC505643502371e29D93C7a86b of the Ropsten
-          test network. If you are reading here you should have
-          <a id="clink" href="./getmetamask.html" target="_blank"
-            >installed Metamask</a
-          >
-          , please switch to the Ropsten test network in the extension for the
-          correct functioning.
+          3) These NFTs are listed in a unique registry found in a smart
+          contract with address 0xAec959Fa5EbF6DCC505643502371e29D93C7a86b of
+          the Ethereum Ropsten test network (requires a
+          <a id="clink" href="./getmetamask.html" target="_blank">Metamask</a>
+          wallet to be installed).
           <br />
-          5) When you click on "Prepare Smart Contract for Media" a new
-          structure is created containing all the data needed in input for the
-          smart contract deployment, created from what is found on the top left
-          text area.
+          4) On the lower part left hand side, when the "Prepare Smart Contract
+          for Media" button is clicked, a new Smart Contract Specification is
+          created, that is a data structure containing all the information
+          needed as input for the Smart Contract for Media deployment.
           <br />
-          6) Once prepared, on the right will appear the income shares
-          (royalties) that will be deployed with the smart contract. On the
-          basis of those, any payment to one of the parties that will be
-          performed on the blockchain will be shared following the same
-          percentages.
+          5) Below this window, the bindings between MPEG-21 CEL/MCO Parties and
+          Ethereum Addresses are also shown. Valid addresses in the Ethereum
+          Ropsten test network are required as input.
           <br />
-          7) Below the incomes infos, a form for associating each contract party
-          to an Ethereum address will be displayed (i.e. the bindings). Real
-          valid addresses in the Ropsten network can be given in input.
-          <br />
-          8) Finally, the "Deploy Smart Contract" button will create a new smart
-          contract containing the infos required for the back conversion.
-          Several ERC721 token are minted and assigned to the
-          Permission/Obligation/Prohibition assignee. The metadata of the token
-          will be stored in IPFS and only the CID (the IPFS hash pointer) will
-          be stored on chain. (Metamask will ask to confirm a new transaction
-          for circa 8-12 times, one for each token to be minted.)
+          6) The Smart Contract for Media is deployed by clicking the "Deploy
+          Smart Contract" button. During this operation the necessary NFTs are
+          minted. The NFTs’ metadata are stored in IPFS and only the IPFS
+          Content Identifier (e.g., the metadata IPFS hash pointer) is stored on
+          the ledger.
           <br />
           <hr />
           <br />
