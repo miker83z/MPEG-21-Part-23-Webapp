@@ -111,20 +111,24 @@ App = {
     try {
       event.preventDefault();
 
-      const ttlContract = App.editor.getValue();
-      const res = await $.ajax({
-        type: 'POST',
-        url: 'https://scm.linkeddata.es/api/parser/mco',
-        contentType: 'text/plain; charset=utf-8',
-        dataType: 'text',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'text/plain',
-        },
-        data: ttlContract,
-      });
+      if (App.celmco === 0) {
+        App.convertToMediaContractualObjectsCEL();
+      } else {
+        const ttlContract = App.editor.getValue();
+        const res = await $.ajax({
+          type: 'POST',
+          url: 'https://scm.linkeddata.es/api/parser/mco',
+          contentType: 'text/plain; charset=utf-8',
+          dataType: 'text',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'text/plain',
+          },
+          data: ttlContract,
+        });
 
-      App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
+        App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
+      }
     } catch (error) {
       console.log(error);
       $('#cstatus').text('Contract Error!');
@@ -143,15 +147,15 @@ App = {
     $(document).on('click', '.btn-convert', App.generateSCMData);
   },
 
-  generateSCMDataCEL: async function () {
+  convertToMediaContractualObjectsCEL: async function () {
     try {
-      App.editor3.setValue(
-        'Wait for a few seconds, while uploading the smart contract to the blockchain...'
+      App.editor2.setValue(
+        'Wait for a few seconds, while converting the CEL contract...'
       );
-      const reqData = App.ondemsale * 3 + App.label;
+      const reqData = App.editor.getValue();
       const res = await $.ajax({
         type: 'POST',
-        url: 'http://localhost:5000',
+        url: 'http://localhost:5000/parse',
         crossDomain: true,
         contentType: 'text/plain; charset=utf-8',
         dataType: 'text',
@@ -159,11 +163,38 @@ App = {
           Accept: 'application/json',
           'Content-Type': 'text/plain',
         },
-        data: reqData.toString(),
+        data: reqData,
       });
-      console.log(res);
 
-      App.editor3.setValue(res);
+      App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  generateSCMDataCEL: async function () {
+    try {
+      App.editor3.setValue(
+        'Wait for a few seconds, while uploading the smart contract to the blockchain...'
+      );
+
+      await App.convertToMediaContractualObjectsCEL();
+
+      const reqData = App.editor.getValue();
+      const res = await $.ajax({
+        type: 'POST',
+        url: 'http://localhost:5000/deploy',
+        crossDomain: true,
+        contentType: 'text/plain; charset=utf-8',
+        dataType: 'text',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'text/plain',
+        },
+        data: reqData,
+      });
+
+      App.editor3.setValue(JSON.stringify(JSON.parse(res), null, 2));
     } catch (error) {
       console.log(error);
     }
