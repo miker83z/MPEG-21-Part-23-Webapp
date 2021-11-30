@@ -2,7 +2,9 @@
 App = {
   web3Provider: null,
   editor: null,
+  editor12: null,
   editor2: null,
+  editor22: null,
   editor3: null,
   celmco: 1,
   ondemsale: 0,
@@ -62,6 +64,20 @@ App = {
     App.editor.setValue(data);
     App.editor.setSize(null, 500);
 
+    App.editor12 = CodeMirror.fromTextArea(
+      document.getElementById('editor12'),
+      {
+        lineNumbers: true,
+        mode: { name: 'text/turtle' },
+        theme: 'base16-dark',
+      }
+    );
+
+    App.editor12.setValue(
+      'Click on convert to generate a MPEG-21 CEL/MCO Contract...'
+    );
+    App.editor12.setSize(null, 500);
+
     App.editor2 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
       lineNumbers: true,
       mode: { name: 'javascript', json: true },
@@ -71,6 +87,19 @@ App = {
       'Click on convert to generate Media Contractual Objects...'
     );
     App.editor2.setSize(null, 500);
+
+    App.editor22 = CodeMirror.fromTextArea(
+      document.getElementById('editor22'),
+      {
+        lineNumbers: true,
+        mode: { name: 'javascript', json: true },
+        theme: 'base16-dark',
+      }
+    );
+    App.editor22.setValue(
+      'Click on parse to generate Media Contractual Objects...'
+    );
+    App.editor22.setSize(null, 500);
 
     App.editor3 = CodeMirror.fromTextArea(document.getElementById('editor3'), {
       lineNumbers: true,
@@ -107,6 +136,24 @@ App = {
     return App.bindEvents();
   },
 
+  bindEvents: function () {
+    $(document).on(
+      'click',
+      '.btn-contract',
+      App.convertToMediaContractualObjects
+    );
+    $(document).on('click', '.btn-refresh', App.handleUpload);
+    $(document).on('click', '.btn-update', App.initContract);
+    $(document).on('click', '.btn-case', App.setCase);
+    $(document).on('click', '.btn-convert', App.generateSCMData);
+    $(document).on('click', '.btn-refresh2', App.parseSmartContract);
+    $(document).on(
+      'click',
+      '.btn-contract2',
+      App.convertToMediaContractualObjects
+    );
+  },
+
   convertToMediaContractualObjects: async function () {
     try {
       event.preventDefault();
@@ -133,18 +180,6 @@ App = {
       console.log(error);
       $('#cstatus').text('Contract Error!');
     }
-  },
-
-  bindEvents: function () {
-    $(document).on(
-      'click',
-      '.btn-contract',
-      App.convertToMediaContractualObjects
-    );
-    $(document).on('click', '.btn-refresh', App.handleUpload);
-    $(document).on('click', '.btn-update', App.initContract);
-    $(document).on('click', '.btn-case', App.setCase);
-    $(document).on('click', '.btn-convert', App.generateSCMData);
   },
 
   convertToMediaContractualObjectsCEL: async function () {
@@ -256,6 +291,67 @@ App = {
     }
   },
 
+  parseSmartContract: async function () {
+    try {
+      event.preventDefault();
+
+      App.editor22.setValue('Can take some minutes...');
+      const scAddress = document.getElementById('caddr').value;
+      const res = await $.ajax({
+        type: 'POST',
+        url: 'https://scm.linkeddata.es/api/eth/parse',
+        contentType: 'text/plain; charset=utf-8',
+        dataType: 'text',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'text/plain',
+        },
+        data: scAddress,
+      });
+
+      App.editor22.setValue(JSON.stringify(JSON.parse(res), null, 2));
+    } catch (error) {
+      console.log(error);
+      $('#cstatus').text('Contract Error!');
+    }
+  },
+
+  convertFromMediaContractualObjects: async function () {
+    try {
+      event.preventDefault();
+
+      const contr = App.editor22.getValue();
+
+      //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
+      const res2 = await $.ajax({
+        type: 'POST',
+        url: 'https://scm.linkeddata.es/api/contracts/',
+        contentType: 'application/json; charset=UFT-8',
+        dataType: 'json',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        data: contr,
+      });
+      //console.log(res2);
+
+      const res3 = await $.ajax({
+        type: 'GET',
+        url: `https://scm.linkeddata.es/api/generator/mco/${res2.contractIdref}`,
+        crossDomain: true,
+        headers: {
+          Accept: 'text/plain',
+        },
+      });
+      //console.log(res3);
+
+      App.editor12.setValue(JSON.stringify(res3, null, 2));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   setPies(scmObjects) {
     var element = document.getElementById('pies');
     while (element.hasChildNodes()) {
@@ -263,8 +359,8 @@ App = {
     }
     for (const key in scmObjects.incomePercentage) {
       var tag = document.createElement('div');
-      tag.style.width = '450px';
-      tag.style.height = '450px';
+      tag.style.width = '200px';
+      tag.style.height = '200px';
       tag.setAttribute('class', 'col-sm-6');
       element.appendChild(tag);
 
