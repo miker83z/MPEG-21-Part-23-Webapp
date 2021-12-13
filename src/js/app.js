@@ -283,6 +283,7 @@ App = {
 
         App.editor3.setValue(JSON.stringify(res3, null, 2));
         document.getElementById('deploybtn').style.display = 'block';
+        document.getElementById('deploybtn2').style.display = 'block';
 
         App.setBindings(res3);
         return App.setPies(res3);
@@ -463,6 +464,7 @@ App = {
       const contractAddress = res.options.address;
       console.log(contractAddress);
       document.getElementById('deploybtn').style.display = 'block';
+      document.getElementById('deploybtn2').style.display = 'block';
       $('#mcoup').text('Deployed!');
       $('#clinkMain').text(
         'https://ropsten.etherscan.io/address/' + contractAddress
@@ -520,6 +522,7 @@ App = {
 
       console.log(appId, nftAppId);
       document.getElementById('deploybtn').style.display = 'block';
+      document.getElementById('deploybtn2').style.display = 'block';
       $('#mcoup').text('Deployed!');
     } catch (error) {
       console.log(error);
