@@ -143,6 +143,7 @@ App = {
       App.convertToMediaContractualObjects
     );
     $(document).on('click', '.btn-refresh', App.handleUpload);
+    $(document).on('click', '.btn-refresh3', App.handleUploadAlgo);
     $(document).on('click', '.btn-update', App.initContract);
     $(document).on('click', '.btn-case', App.setCase);
     $(document).on('click', '.btn-convert', App.generateSCMData);
@@ -272,7 +273,7 @@ App = {
 
         const res3 = await $.ajax({
           type: 'GET',
-          url: `https://scm.linkeddata.es/api/eth/generate/${res2.contractIdref}`,
+          url: `https://scm.linkeddata.es/api/dlt/generate/${res2.contractIdref}`,
           crossDomain: true,
           headers: {
             Accept: 'application/json',
@@ -299,7 +300,7 @@ App = {
       const scAddress = document.getElementById('caddr').value;
       const res = await $.ajax({
         type: 'POST',
-        url: 'https://scm.linkeddata.es/api/eth/parse',
+        url: 'https://scm.linkeddata.es/api/dlt/eth/parse',
         contentType: 'text/plain; charset=utf-8',
         dataType: 'text',
         headers: {
@@ -449,8 +450,8 @@ App = {
         method: 'net_version',
       });
 
-      const ipfs = new EthSCM.OffChainStorage();
-      const deployer = new EthSCM.SmartContractDeployer(
+      const ipfs = new SCM.OffChainStorage();
+      const deployer = new SCM.EthereumDeployer(
         App.web3Provider,
         ipfs,
         mediaSC,
@@ -470,6 +471,56 @@ App = {
         'href',
         'https://ropsten.etherscan.io/address/' + contractAddress
       );
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  handleUploadAlgo: async function (event) {
+    event.preventDefault();
+
+    const bindings = await $.getJSON('../bindings-algo.json');
+    const mediaSC = JSON.parse(App.editor3.getValue());
+
+    try {
+      $('#mcoup').text('Uploading MCO Contract...');
+
+      const master = SCM.AlgoDeployer.fromMnemonic(
+        'enforce drive foster uniform cradle tired win arrow wasp melt cattle chronic sport dinosaur announce shell correct shed amused dismiss mother jazz task above hospital'
+      );
+      const john = SCM.AlgoDeployer.fromMnemonic(
+        'found empower message suit siege arrive dad reform museum cake evoke broom comfort fluid flower wheat gasp baby auction tuna sick case camera about flip'
+      );
+      const elon = SCM.AlgoDeployer.fromMnemonic(
+        'resist derive table space jealous person pink ankle hint venture manual spawn move harbor flip cigar copy throw swap night series hybrid chest absent art'
+      );
+      const alice = SCM.AlgoDeployer.fromMnemonic(
+        'brand globe reason guess allow wear roof leisure season coin own pen duck worth virus silk jazz pitch behave jazz leisure pave unveil absorb kick'
+      );
+      const bob = SCM.AlgoDeployer.fromMnemonic(
+        'caution fuel omit buzz six unique method kiwi twist afraid monitor song leader mask bachelor siege what shiver fringe else mass hero deposit absorb tooth'
+      );
+
+      const ipfs = new SCM.OffChainStorage();
+      const provider = {
+        apiToken:
+          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        baseServer: 'https://scm.linkeddata.es/algo/',
+        port: '443',
+      };
+      const deployer = new SCM.AlgoDeployer(provider, ipfs, mediaSC, bindings);
+      await deployer.setMainAddress(master);
+      const [appId, nftAppId] = await deployer.deploySmartContracts([
+        master,
+        john,
+        elon,
+        alice,
+        bob,
+      ]);
+
+      console.log(appId, nftAppId);
+      document.getElementById('deploybtn').style.display = 'block';
+      $('#mcoup').text('Deployed!');
     } catch (error) {
       console.log(error);
     }
