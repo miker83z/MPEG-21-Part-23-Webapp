@@ -498,7 +498,7 @@ App = {
     const mediaSC = JSON.parse(App.editor3.getValue());
 
     try {
-      $('#mcoup').text('Uploading MCO Contract...');
+      $('#mcoup').text('Uploading Smart Contract...');
 
       const networkId = await App.web3Provider.request({
         method: 'net_version',
@@ -537,6 +537,9 @@ App = {
         'href',
         'https://ropsten.etherscan.io/address/' + contractAddress
       );
+      document.getElementById('scmaddr').value = contractAddress;
+      document.getElementById('nftaddr').value =
+        '0xAec959Fa5EbF6DCC505643502371e29D93C7a86b';
     } catch (error) {
       console.log(error);
     }
@@ -550,7 +553,7 @@ App = {
     const mediaSC = JSON.parse(App.editor3.getValue());
 
     try {
-      $('#mcoup').text('Uploading MCO Contract...');
+      $('#mcoup').text('Uploading Smart Contract...');
 
       const master = SCM.AlgoDeployer.fromMnemonic(
         'enforce drive foster uniform cradle tired win arrow wasp melt cattle chronic sport dinosaur announce shell correct shed amused dismiss mother jazz task above hospital'
@@ -599,6 +602,8 @@ App = {
       console.log(appId, nftAppId);
       document.getElementById('deploybtn2').style.display = 'block';
       $('#mcoup').text('Deployed!');
+      document.getElementById('scmaddr').value = appId;
+      document.getElementById('nftaddr').value = nftAppId;
     } catch (error) {
       console.log(error);
     }
