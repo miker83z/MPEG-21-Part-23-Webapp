@@ -3,6 +3,7 @@ App = {
   web3Provider: null,
   editor: null,
   editor12: null,
+  editorLog1: null,
   editor2: null,
   editor22: null,
   editor3: null,
@@ -77,6 +78,20 @@ App = {
       'Click on convert to generate a MPEG-21 CEL/MCO Contract...'
     );
     App.editor12.setSize(null, 500);
+
+    App.editorLog1 = CodeMirror.fromTextArea(
+      document.getElementById('editorLog1'),
+      {
+        lineNumbers: true,
+        mode: { name: 'text/turtle' },
+        theme: 'base16-dark',
+      }
+    );
+
+    App.editorLog1.setValue(
+      'Click on convert to generate a MPEG-21 CEL/MCO Contract...'
+    );
+    App.editorLog1.setSize(null, 500);
 
     App.editor2 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
       lineNumbers: true,
@@ -512,6 +527,17 @@ App = {
       };
       const deployer = new SCM.AlgoDeployer(provider, ipfs, mediaSC, bindings);
       await deployer.setMainAddress(master);
+
+      var old = console.log;
+      console.log = function (message) {
+        if (typeof message == 'object') {
+          App.editorLog1.setValue(
+            JSON && JSON.stringify ? JSON.stringify(message) : String(message)
+          );
+        } else {
+          App.editorLog1.setValue(message);
+        }
+      };
       const [appId, nftAppId] = await deployer.deploySmartContracts([
         master,
         john,
@@ -519,6 +545,7 @@ App = {
         alice,
         bob,
       ]);
+      console.log = old;
 
       console.log(appId, nftAppId);
       document.getElementById('deploybtn').style.display = 'block';
