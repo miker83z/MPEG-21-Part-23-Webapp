@@ -185,7 +185,6 @@ App = {
       web3 = new Web3(App.web3Provider);
     } catch (error) {
       document.getElementById('metamask').style.display = 'block';
-      document.getElementById('deploybtn').style.display = 'none';
       App.editor3.setValue('You need an Ethereum provider (Metamask)');
     }
 
@@ -338,9 +337,6 @@ App = {
         //console.log(res3);
 
         App.editor3.setValue(JSON.stringify(res3, null, 2));
-        document.getElementById('deploybtn').style.display = 'block';
-        document.getElementById('deploybtn2').style.display = 'block';
-
         App.setBindings(res3);
         return App.setPies(res3);
       }
@@ -487,6 +483,7 @@ App = {
   handleUpload: async function (event) {
     event.preventDefault();
 
+    document.getElementById('deploybtn').style.display = 'none';
     const bindings = {};
     for (
       let i = 0;
@@ -516,11 +513,22 @@ App = {
         networkId
       );
       await deployer.setMainAddress(0);
+
+      var old = console.log;
+      console.log = function (message) {
+        if (typeof message == 'object') {
+          App.editorLog1.setValue(
+            JSON && JSON.stringify ? JSON.stringify(message) : String(message)
+          );
+        } else {
+          App.editorLog1.setValue(message);
+        }
+      };
       const res = await deployer.deploySmartContracts();
       const contractAddress = res.options.address;
+      console.log = old;
       console.log(contractAddress);
       document.getElementById('deploybtn').style.display = 'block';
-      document.getElementById('deploybtn2').style.display = 'block';
       $('#mcoup').text('Deployed!');
       $('#clinkMain').text(
         'https://ropsten.etherscan.io/address/' + contractAddress
@@ -536,6 +544,7 @@ App = {
 
   handleUploadAlgo: async function (event) {
     event.preventDefault();
+    document.getElementById('deploybtn2').style.display = 'none';
 
     const bindings = await $.getJSON('../bindings-algo.json');
     const mediaSC = JSON.parse(App.editor3.getValue());
@@ -587,9 +596,7 @@ App = {
         bob,
       ]);
       console.log = old;
-
       console.log(appId, nftAppId);
-      document.getElementById('deploybtn').style.display = 'block';
       document.getElementById('deploybtn2').style.display = 'block';
       $('#mcoup').text('Deployed!');
     } catch (error) {
