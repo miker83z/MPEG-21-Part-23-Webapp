@@ -29,9 +29,9 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h1 class="text-center">
-            ISO/IEC 21000-23 Smart Contracts for Media
+            <b> ISO/IEC 21000-23 Smart Contracts for Media </b>
           </h1>
           <br />
           This webapp uses the ISO/IEC 21000-23 Smart Contracts for Media APIs
@@ -47,29 +47,96 @@
           Contractual Objects are displayed by clicking the button “Convert to
           Media Contractual Objects”. On the lower part left hand side, a window
           is shown where the generated Smart Contract Specification is displayed
-          by clicking the button “Prepare Smart Contract for Media”. Below this
-          window, the bindings between MPEG-21 CEL/MCO Parties and DLT Addresses
-          are also shown. On the lower part right hand side, data are shown in
-          the form of doughnut charts with respect to the revenue percentages of
-          each party involved in the distribution of royalties (e.g., splits).
+          by clicking the button “Prepare Smart Contract Specification”. Below
+          this window, the bindings between MPEG-21 CEL/MCO Parties and DLT
+          Addresses are also shown. On the lower part right hand side, data are
+          shown in the form of doughnut charts with respect to the revenue
+          percentages of each party involved in the distribution of royalties
+          (e.g., splits).
           <hr />
         </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-12">
+        <h3 class="text-center">
+          <b> Select Technology </b>
+        </h3>
+        <h1 class="text-center">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-success btn-case btn-lg" data-id="0">
+              <input
+                type="radio"
+                name="options"
+                id="option1"
+                autocomplete="off"
+                checked
+              />
+              CEL
+            </label>
+            <label class="btn btn-success btn-case btn-lg active" data-id="1">
+              <input
+                type="radio"
+                name="options"
+                id="option2"
+                autocomplete="off"
+              />
+              MCO
+            </label>
+          </div>
+          <br />
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-danger btn-case btn-lg active" data-id="7">
+              <input
+                type="radio"
+                name="options"
+                id="option1"
+                autocomplete="off"
+                checked
+              />
+              Ethereum
+            </label>
+            <label class="btn btn-danger btn-case btn-lg" data-id="8">
+              <input
+                type="radio"
+                name="options"
+                id="option2"
+                autocomplete="off"
+              />
+              Algorand
+            </label>
+            <label class="btn btn-danger btn-case btn-lg" data-id="9">
+              <input
+                type="radio"
+                name="options"
+                id="option2"
+                autocomplete="off"
+              />
+              Tezos
+            </label>
+          </div>
+          <br />
+          <br />
+        </h1>
+        <hr />
       </div>
     </div>
 
     <!-- MPEG-21 CEL/MCO Contract to Smart Contract for Media -->
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h3 class="text-center">
-            MPEG-21 CEL/MCO Contract to Smart Contract for Media Conversion
+            <b>
+              Forward Conversion <br />
+              MPEG-21 CEL/MCO Contract to Smart Contract for Media Conversion
+            </b>
           </h3>
           <hr />
         </div>
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h4 class="text-center">
             1) MPEG-21 CEL/MCO Contract template selection
           </h4>
@@ -77,31 +144,8 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h1 class="text-center">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-success btn-case btn-lg" data-id="0">
-                <input
-                  type="radio"
-                  name="options"
-                  id="option1"
-                  autocomplete="off"
-                  checked
-                />
-                CEL
-              </label>
-              <label class="btn btn-success btn-case btn-lg active" data-id="1">
-                <input
-                  type="radio"
-                  name="options"
-                  id="option2"
-                  autocomplete="off"
-                />
-                MCO
-              </label>
-            </div>
-            <br />
-
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
               <label class="btn btn-warning btn-case btn-lg active" data-id="2">
                 <input
@@ -162,7 +206,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <textarea id="editor"></textarea>
         </div>
       </div>
@@ -170,7 +214,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h4 class="text-center">
             2) MPEG-21 CEL/MCO Contract to Media Contractual Objects
           </h4>
@@ -178,11 +222,13 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <div id="convertotomcobtn" class="col-xs-4 col-sm-4 col-sm-push-4">
-            <button class="btn btn-primary btn-contract" type="button">
-              Convert to Media Contractual Objects
-            </button>
+        <div class="col-xs-12 col-sm-12">
+          <div id="convertotomcobtn">
+            <center>
+              <button class="btn btn-primary btn-contract" type="button">
+                Convert to Media Contractual Objects
+              </button>
+            </center>
           </div>
         </div>
       </div>
@@ -190,7 +236,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <textarea id="editor2"></textarea>
         </div>
       </div>
@@ -198,7 +244,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h4 class="text-center">
             3) Media Contractual Objects to Smart Contract Specification
           </h4>
@@ -206,11 +252,13 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <div id="convertotomcobtn2" class="col-xs-4 col-sm-4 col-sm-push-4">
-            <button class="btn btn-primary btn-convert" type="button">
-              Prepare Smart Contract for Media
-            </button>
+        <div class="col-xs-12 col-sm-12">
+          <div id="convertotomcobtn2">
+            <center>
+              <button class="btn btn-primary btn-convert" type="button">
+                Prepare Smart Contract Specification
+              </button>
+            </center>
           </div>
         </div>
       </div>
@@ -218,7 +266,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <textarea id="editor3"></textarea>
         </div>
       </div>
@@ -233,7 +281,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h4 class="text-center">4) Deploy Smart Contract for Media</h4>
         </div>
         <div id="metamask" style="display: none">
@@ -277,8 +325,8 @@
           wallet to be installed).
           <br />
           4) On the lower part left hand side, when the "Prepare Smart Contract
-          for Media" button is clicked, a new Smart Contract Specification is
-          created, that is a data structure containing all the information
+          Specification" button is clicked, a new Smart Contract Specification
+          is created, that is a data structure containing all the information
           needed as input for the Smart Contract for Media deployment.
           <br />
           5) Below this window, the bindings between MPEG-21 CEL/MCO Parties and
@@ -290,6 +338,14 @@
           minted. The NFTs’ metadata are stored in IPFS and only the IPFS
           Content Identifier (e.g., the metadata IPFS hash pointer) is stored on
           the ledger.
+        </div>
+        <div id="algorandDeploy" style="display: none">
+          <hr />
+          <center><h4>Algorand</h4></center>
+          <br />
+          1)
+          <br />
+          2)
         </div>
       </div>
 
@@ -303,33 +359,45 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <div id="convertotomcobtn3" class="col-xs-4 col-sm-4 col-sm-push-4">
-            <button
-              id="deploybtn"
-              style="display: none"
-              class="btn btn-success btn-refresh"
-              type="button"
-            >
-              Deploy on Ethereum
-            </button>
-            <button
-              id="deploybtn2"
-              style="display: none"
-              class="btn btn-danger btn-refresh3"
-              type="button"
-            >
-              Deploy on Algorand
-            </button>
+        <div class="col-xs-12 col-sm-12">
+          <center>
+            <h4>Smart Contract Template</h4>
+          </center>
+          <textarea id="editor4"></textarea>
+        </div>
+      </div>
+      <br />
 
-            <div class="row">
-              <div class="col-xs-12 col-sm-8 col-sm-push-2">
-                <textarea id="editorLog1"></textarea>
-              </div>
-            </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12">
+          <div id="convertotomcobtn3">
+            <center>
+              <button
+                id="deploybtn"
+                style="display: none"
+                class="btn btn-success btn-refresh"
+                type="button"
+              >
+                Deploy on Ethereum
+              </button>
+              <button
+                id="deploybtn2"
+                style="display: none"
+                class="btn btn-danger btn-refresh3"
+                type="button"
+              >
+                Deploy on Algorand
+              </button>
+            </center>
             <div id="mcoup">Waiting for deploying contract...</div>
             <a id="clinkMain" href="" target="_blank"></a>
           </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-12">
+          <textarea id="editorLog1"></textarea>
         </div>
       </div>
     </div>
@@ -337,20 +405,25 @@
     <br />
     <br />
     <br />
+    <br />
+    <br />
 
     <!--  Smart Contract for Media to MPEG-21 CEL/MCO Contract -->
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h3 class="text-center">
-            Smart Contract for Media to MPEG-21 CEL/MCO Contract Conversion
+            <b>
+              Backward Conversion <br />
+              Smart Contract for Media to MPEG-21 CEL/MCO Contract Conversion
+            </b>
           </h3>
           <hr />
         </div>
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h4 class="text-center">
             1) Smart Contract for Media to Media Contractual Objects
           </h4>
@@ -358,7 +431,7 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <div id="convertotomcobtn4">
             <div id="formdiv">
               <label for="caddr">Contract Address:</label>
@@ -384,7 +457,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <textarea id="editor22"></textarea>
         </div>
       </div>
@@ -392,7 +465,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <h4 class="text-center">
             2) Media Contractual Objects to MPEG-21 CEL/MCO Contract
           </h4>
@@ -400,11 +473,13 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <div id="convertotomcobtn7" class="col-xs-4 col-sm-4 col-sm-push-4">
-            <button class="btn btn-primary btn-contract2" type="button">
-              Convert to MPEG-21 CEL/MCO Contract
-            </button>
+        <div class="col-xs-12 col-sm-12">
+          <div id="convertotomcobtn7">
+            <center>
+              <button class="btn btn-primary btn-contract2" type="button">
+                Convert to MPEG-21 CEL/MCO Contract
+              </button>
+            </center>
           </div>
         </div>
       </div>
@@ -412,7 +487,7 @@
       <br />
 
       <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <div class="col-xs-12 col-sm-12">
           <textarea id="editor12"></textarea>
         </div>
       </div>

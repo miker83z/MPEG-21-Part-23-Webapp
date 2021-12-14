@@ -7,7 +7,9 @@ App = {
   editor2: null,
   editor22: null,
   editor3: null,
+  editor4: null,
   celmco: 1,
+  blockchain: 0,
   ondemsale: 0,
   label: 1,
   templatesCube: [],
@@ -40,6 +42,35 @@ App = {
 
     App.templatesCube.push(cel);
     App.templatesCube.push(mco);
+  },
+
+  getSCTemplate: function (x, y) {
+    switch (y) {
+      case 0:
+        if (x == 0) {
+          return [
+            '../templates/sc/Ethereum_Smart.sol',
+            '../templates/sc/Ethereum_Media_Token.sol',
+          ];
+        } else {
+          return [
+            '../templates/sc/Contract.sol',
+            '../templates/sc/NFToken.sol',
+          ];
+        }
+      case 1:
+        return [
+          '../templates/sc/main_approval.py',
+          '../templates/sc/nft_approval.py',
+        ];
+      case 2:
+        return [
+          '../templates/sc/Ethereum_Smart.sol',
+          '../templates/sc/Ethereum_Media_Token.sol',
+        ];
+      default:
+        return;
+    }
   },
 
   getTemplate: function (x, y, z) {
@@ -89,9 +120,9 @@ App = {
     );
 
     App.editorLog1.setValue(
-      'Click on convert to generate a MPEG-21 CEL/MCO Contract...'
+      'Click on Deploy, the progress will be shown here...'
     );
-    App.editorLog1.setSize(null, 500);
+    App.editorLog1.setSize(null, 30);
 
     App.editor2 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
       lineNumbers: true,
@@ -124,7 +155,17 @@ App = {
     App.editor3.setValue('Prepare and then deploy the smart contract...');
     App.editor3.setSize(null, 500);
 
+    App.editor4 = CodeMirror.fromTextArea(document.getElementById('editor4'), {
+      lineNumbers: true,
+      mode: { name: 'javascript' },
+      theme: 'base16-dark',
+    });
+    App.editor4.setValue('Smart Contract Template');
+    App.editor4.setSize(null, 500);
+
     App.utilsString();
+
+    App.setBlockchain();
 
     return App.initWeb3();
   },
@@ -556,6 +597,49 @@ App = {
     }
   },
 
+  setTemplate: async function () {
+    const jsonFile = App.getTemplate(App.celmco, App.ondemsale, App.label);
+    var data = await $.get(jsonFile);
+    if (App.celmco === 0) {
+      data = new XMLSerializer().serializeToString(data);
+    }
+    App.editor.setValue(data);
+  },
+
+  setBlockchain: async function () {
+    switch (App.blockchain) {
+      case 0:
+        document.getElementById('ethereumDeploy').style.display = 'block';
+        document.getElementById('bindings').style.display = 'block';
+        document.getElementById('deploybtn').style.display = 'block';
+        document.getElementById('deploybtn2').style.display = 'none';
+        document.getElementById('algorandDeploy').style.display = 'none';
+        break;
+      case 1:
+        document.getElementById('ethereumDeploy').style.display = 'none';
+        document.getElementById('bindings').style.display = 'none';
+        document.getElementById('deploybtn').style.display = 'none';
+        document.getElementById('deploybtn2').style.display = 'block';
+        document.getElementById('algorandDeploy').style.display = 'block';
+        break;
+      case 2:
+        document.getElementById('ethereumDeploy').style.display = 'block';
+        document.getElementById('bindings').style.display = 'block';
+        document.getElementById('deploybtn').style.display = 'block';
+        document.getElementById('deploybtn2').style.display = 'none';
+        document.getElementById('algorandDeploy').style.display = 'none';
+        break;
+      default:
+        break;
+    }
+
+    const scFiles = App.getSCTemplate(App.celmco, App.blockchain);
+    var data = await $.get(scFiles[0]);
+    data += '\n\n' + (await $.get(scFiles[1]));
+    console.log(data);
+    App.editor4.setValue(data);
+  },
+
   setCase: async function (event) {
     event.preventDefault();
     var petId = parseInt($(event.target).data('id'));
@@ -582,17 +666,20 @@ App = {
       case 6:
         App.label = 2;
         break;
+      case 7:
+        App.blockchain = 0;
+        break;
+      case 8:
+        App.blockchain = 1;
+        break;
+      case 9:
+        App.blockchain = 0;
+        break;
       default:
         break;
     }
-
-    const jsonFile = App.getTemplate(App.celmco, App.ondemsale, App.label);
-    console.log(jsonFile);
-    var data = await $.get(jsonFile);
-    if (App.celmco === 0) {
-      data = new XMLSerializer().serializeToString(data);
-    }
-    App.editor.setValue(data);
+    await App.setBlockchain();
+    await App.setTemplate();
   },
 
   utilsString: function () {
