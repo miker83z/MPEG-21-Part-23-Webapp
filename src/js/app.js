@@ -203,6 +203,7 @@ App = {
     $(document).on('click', '.btn-case', App.setCase);
     $(document).on('click', '.btn-convert', App.generateSCMData);
     $(document).on('click', '.btn-refresh2', App.parseSmartContract);
+    $(document).on('click', '.btn-refresh44', App.parseSmartContractAlgorand);
     $(document).on(
       'click',
       '.btn-contract2',
@@ -234,7 +235,6 @@ App = {
       }
     } catch (error) {
       console.log(error);
-      $('#cstatus').text('Contract Error!');
     }
   },
 
@@ -353,7 +353,7 @@ App = {
       const scAddress = document.getElementById('caddr').value;
       const res = await $.ajax({
         type: 'POST',
-        url: 'https://scm.linkeddata.es/api/dlt/eth/parse',
+        url: 'https://scm.linkeddata.es/api/dlt/eth/parse/',
         contentType: 'text/plain; charset=utf-8',
         dataType: 'text',
         headers: {
@@ -366,7 +366,35 @@ App = {
       App.editor22.setValue(JSON.stringify(JSON.parse(res), null, 2));
     } catch (error) {
       console.log(error);
-      $('#cstatus').text('Contract Error!');
+    }
+  },
+
+  parseSmartContractAlgorand: async function () {
+    try {
+      event.preventDefault();
+
+      App.editor22.setValue('Can take some minutes...');
+      const scAddress = document.getElementById('caddr').value;
+      const nftAddress = document.getElementById('caddr2').value;
+      const res = await $.ajax({
+        type: 'POST',
+        url: 'https://scm.linkeddata.es/api/dlt/algo/parse/',
+        contentType: 'application/json; charset=UFT-8',
+        dataType: 'json',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        data: {
+          address: 'WWYNX3TKQYVEREVSW6QQP3SXSFOCE3SKUSEIVJ7YAGUPEACNI5UGI4DZCE',
+          appId: parseInt(scAddress),
+          nftAppId: parseInt(nftAddress),
+        },
+      });
+
+      App.editor22.setValue(JSON.stringify(JSON.parse(res), null, 2));
+    } catch (error) {
+      console.log(error);
     }
   },
 
@@ -624,22 +652,28 @@ App = {
         document.getElementById('ethereumDeploy').style.display = 'block';
         document.getElementById('bindings').style.display = 'block';
         document.getElementById('deploybtn').style.display = 'block';
+        document.getElementById('parsebtn').style.display = 'block';
         document.getElementById('deploybtn2').style.display = 'none';
         document.getElementById('algorandDeploy').style.display = 'none';
+        document.getElementById('parsebtn2').style.display = 'none';
         break;
       case 1:
         document.getElementById('ethereumDeploy').style.display = 'none';
         document.getElementById('bindings').style.display = 'none';
         document.getElementById('deploybtn').style.display = 'none';
+        document.getElementById('parsebtn').style.display = 'none';
         document.getElementById('deploybtn2').style.display = 'block';
         document.getElementById('algorandDeploy').style.display = 'block';
+        document.getElementById('parsebtn2').style.display = 'block';
         break;
       case 2:
         document.getElementById('ethereumDeploy').style.display = 'block';
         document.getElementById('bindings').style.display = 'block';
         document.getElementById('deploybtn').style.display = 'block';
+        document.getElementById('parsebtn').style.display = 'block';
         document.getElementById('deploybtn2').style.display = 'none';
         document.getElementById('algorandDeploy').style.display = 'none';
+        document.getElementById('parsebtn2').style.display = 'none';
         break;
       default:
         break;
