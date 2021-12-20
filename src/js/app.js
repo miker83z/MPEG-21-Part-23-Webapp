@@ -195,7 +195,7 @@ App = {
     $(document).on(
       'click',
       '.btn-contract',
-      App.convertToMediaContractualObjects(false)
+      App.convertToMediaContractualObjects
     );
     $(document).on('click', '.btn-refresh', App.handleUpload);
     $(document).on('click', '.btn-refresh3', App.handleUploadAlgo);
@@ -207,26 +207,18 @@ App = {
     $(document).on(
       'click',
       '.btn-contract2',
-      App.convertToMediaContractualObjects(true)
+      App.convertFromMediaContractualObjects
     );
   },
 
-  convertToMediaContractualObjects: async function (backconversion) {
+  convertToMediaContractualObjects: async function () {
     try {
       event.preventDefault();
 
-      let editInput = App.editor;
-      let editOutput = App.editor2;
-
-      if (backconversion) {
-        editInput = App.editor2;
-        editOutput = App.editor12;
-      }
-
       if (App.celmco === 0) {
-        App.convertToMediaContractualObjectsCEL(editInput, editOutput);
+        App.convertToMediaContractualObjectsCEL();
       } else {
-        const ttlContract = editInput.getValue();
+        const ttlContract = App.editor.getValue();
         const res = await $.ajax({
           type: 'POST',
           url: 'https://scm.linkeddata.es/api/parser/mco',
@@ -239,19 +231,19 @@ App = {
           data: ttlContract,
         });
 
-        editOutput.setValue(JSON.stringify(JSON.parse(res), null, 2));
+        App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-  convertToMediaContractualObjectsCEL: async function (editInput, editOutput) {
+  convertToMediaContractualObjectsCEL: async function () {
     try {
-      editOutput.setValue(
+      App.editor2.setValue(
         'Wait for a few seconds, while converting the CEL contract...'
       );
-      const reqData = editInput.getValue();
+      const reqData = App.editor.getValue();
       const res = await $.ajax({
         type: 'POST',
         url: 'http://localhost:5000/parse',
@@ -265,7 +257,7 @@ App = {
         data: reqData,
       });
 
-      editOutput.setValue(JSON.stringify(JSON.parse(res), null, 2));
+      App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
     } catch (error) {
       console.log(error);
     }
@@ -690,7 +682,7 @@ App = {
     const scFiles = App.getSCTemplate(App.celmco, App.blockchain);
     var data = await $.get(scFiles[0]);
     data += '\n\n' + (await $.get(scFiles[1]));
-    console.log(data);
+    //console.log(data);
     App.editor4.setValue(data);
   },
 
