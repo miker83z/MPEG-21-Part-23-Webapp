@@ -195,7 +195,7 @@ App = {
     $(document).on(
       'click',
       '.btn-contract',
-      App.convertToMediaContractualObjects
+      App.convertToMediaContractualObjects(false)
     );
     $(document).on('click', '.btn-refresh', App.handleUpload);
     $(document).on('click', '.btn-refresh3', App.handleUploadAlgo);
@@ -207,18 +207,26 @@ App = {
     $(document).on(
       'click',
       '.btn-contract2',
-      App.convertToMediaContractualObjects
+      App.convertToMediaContractualObjects(true)
     );
   },
 
-  convertToMediaContractualObjects: async function () {
+  convertToMediaContractualObjects: async function (backconversion) {
     try {
       event.preventDefault();
 
+      let editInput = App.editor;
+      let editOutput = App.editor2;
+
+      if (backconversion) {
+        editInput = App.editor2;
+        editOutput = App.editor12;
+      }
+
       if (App.celmco === 0) {
-        App.convertToMediaContractualObjectsCEL();
+        App.convertToMediaContractualObjectsCEL(editInput, editOutput);
       } else {
-        const ttlContract = App.editor.getValue();
+        const ttlContract = editInput.getValue();
         const res = await $.ajax({
           type: 'POST',
           url: 'https://scm.linkeddata.es/api/parser/mco',
@@ -231,19 +239,19 @@ App = {
           data: ttlContract,
         });
 
-        App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
+        editOutput.setValue(JSON.stringify(JSON.parse(res), null, 2));
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-  convertToMediaContractualObjectsCEL: async function () {
+  convertToMediaContractualObjectsCEL: async function (editInput, editOutput) {
     try {
-      App.editor2.setValue(
+      editOutput.setValue(
         'Wait for a few seconds, while converting the CEL contract...'
       );
-      const reqData = App.editor.getValue();
+      const reqData = editInput.getValue();
       const res = await $.ajax({
         type: 'POST',
         url: 'http://localhost:5000/parse',
@@ -257,7 +265,7 @@ App = {
         data: reqData,
       });
 
-      App.editor2.setValue(JSON.stringify(JSON.parse(res), null, 2));
+      editOutput.setValue(JSON.stringify(JSON.parse(res), null, 2));
     } catch (error) {
       console.log(error);
     }
