@@ -287,8 +287,8 @@ App = {
 
       document.getElementById('deploybtn').style.display = 'block';
 
-      //App.editor3.setValue(JSON.stringify(JSON.parse(res), null, 2));
       const contrJSON = JSON.parse(res);
+      App.editorLog1.setValue(JSON.stringify(contrJSON.details, null, 2));
       document.getElementById('scmaddr').value = contrJSON.contract_address;
       document.getElementById('nftaddr').value = contrJSON.media_token_address;
     } catch (error) {
@@ -405,7 +405,7 @@ App = {
       //const nftAddress = document.getElementById('caddr2').value;
       const res3 = await $.ajax({
         type: 'POST',
-        url: `http://localhost:5000/reverse?contractId=${scAddress}&contract_address=${scAddress}`,
+        url: `http://scm.linkeddata.es/cel/reverse?contractId=${scAddress}&contract_address=${scAddress}`,
         crossDomain: true,
         headers: {
           Accept: 'application/json',
