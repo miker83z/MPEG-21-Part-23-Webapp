@@ -405,7 +405,7 @@ App = {
       //const nftAddress = document.getElementById('caddr2').value;
       const res3 = await $.ajax({
         type: 'POST',
-        url: `http://scm.linkeddata.es/cel/reverse?contractId=${scAddress}&contract_address=${scAddress}`,
+        url: `https://scm.linkeddata.es/cel/reverse?contractId=${scAddress}&contract_address=${scAddress}`,
         crossDomain: true,
         headers: {
           Accept: 'application/json',
