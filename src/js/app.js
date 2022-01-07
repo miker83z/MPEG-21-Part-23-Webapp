@@ -10,6 +10,8 @@ App = {
   editor4: null,
   celmco: 1,
   blockchain: 0,
+  blockchainTempCel: 0,
+  blockchainTempMco: 0,
   ondemsale: 0,
   label: 1,
   templatesCube: [],
@@ -265,9 +267,7 @@ App = {
 
   generateSCMDataCEL: async function () {
     try {
-      App.editor3.setValue(
-        'Wait for a few seconds, while uploading the smart contract to the blockchain...'
-      );
+      document.getElementById('deploybtn').style.display = 'block';
 
       await App.convertToMediaContractualObjectsCEL();
 
@@ -285,7 +285,12 @@ App = {
         data: reqData,
       });
 
-      App.editor3.setValue(JSON.stringify(JSON.parse(res), null, 2));
+      document.getElementById('deploybtn').style.display = 'block';
+
+      //App.editor3.setValue(JSON.stringify(JSON.parse(res), null, 2));
+      const contrJSON = JSON.parse(res);
+      document.getElementById('scmaddr').value = contrJSON.contract_address;
+      document.getElementById('nftaddr').value = contrJSON.media_token_address;
     } catch (error) {
       console.log(error);
     }
@@ -295,51 +300,47 @@ App = {
     try {
       event.preventDefault();
 
-      if (App.celmco === 0) {
-        App.generateSCMDataCEL();
-      } else {
-        const ttlContract = App.editor.getValue();
-        const res = await $.ajax({
-          type: 'POST',
-          url: 'https://scm.linkeddata.es/api/parser/mco',
-          contentType: 'text/plain; charset=utf-8',
-          dataType: 'text',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'text/plain',
-          },
-          data: ttlContract,
-        });
-        const contr = JSON.parse(res).contracts[0];
+      const ttlContract = App.editor.getValue();
+      const res = await $.ajax({
+        type: 'POST',
+        url: 'https://scm.linkeddata.es/api/parser/mco',
+        contentType: 'text/plain; charset=utf-8',
+        dataType: 'text',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'text/plain',
+        },
+        data: ttlContract,
+      });
+      const contr = JSON.parse(res).contracts[0];
 
-        //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
-        const res2 = await $.ajax({
-          type: 'POST',
-          url: 'https://scm.linkeddata.es/api/contracts/',
-          contentType: 'application/json; charset=UFT-8',
-          dataType: 'json',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          data: JSON.stringify(contr),
-        });
-        //console.log(res2);
+      //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
+      const res2 = await $.ajax({
+        type: 'POST',
+        url: 'https://scm.linkeddata.es/api/contracts/',
+        contentType: 'application/json; charset=UFT-8',
+        dataType: 'json',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(contr),
+      });
+      //console.log(res2);
 
-        const res3 = await $.ajax({
-          type: 'GET',
-          url: `https://scm.linkeddata.es/api/dlt/generate/${res2.contractIdref}`,
-          crossDomain: true,
-          headers: {
-            Accept: 'application/json',
-          },
-        });
-        //console.log(res3);
+      const res3 = await $.ajax({
+        type: 'GET',
+        url: `https://scm.linkeddata.es/api/dlt/generate/${res2.contractIdref}`,
+        crossDomain: true,
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      //console.log(res3);
 
-        App.editor3.setValue(JSON.stringify(res3, null, 2));
-        App.setBindings(res3);
-        return App.setPies(res3);
-      }
+      App.editor3.setValue(JSON.stringify(res3, null, 2));
+      App.setBindings(res3);
+      return App.setPies(res3);
     } catch (error) {
       console.log(error);
     }
@@ -398,39 +399,62 @@ App = {
     }
   },
 
-  convertFromMediaContractualObjects: async function () {
+  convertFromMediaContractualObjectsCel: async function () {
     try {
-      event.preventDefault();
-
-      const contr = App.editor22.getValue();
-
-      //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
-      const res2 = await $.ajax({
-        type: 'POST',
-        url: 'https://scm.linkeddata.es/api/contracts/',
-        contentType: 'application/json; charset=UFT-8',
-        dataType: 'json',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        data: contr,
-      });
-      //console.log(res2);
-
+      const scAddress = document.getElementById('caddr').value;
+      //const nftAddress = document.getElementById('caddr2').value;
       const res3 = await $.ajax({
-        type: 'GET',
-        url: `https://scm.linkeddata.es/api/generator/mco/${res2.contractIdref}`,
+        type: 'POST',
+        url: `http://localhost:5000/reverse?contractId=${scAddress}&contract_address=${scAddress}`,
         crossDomain: true,
         headers: {
-          Accept: 'text/plain',
+          Accept: 'application/json',
         },
       });
       //console.log(res3);
 
-      App.editor12.setValue(JSON.stringify(res3, null, 2));
+      App.editor12.setValue(res3.xml);
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  convertFromMediaContractualObjects: async function () {
+    event.preventDefault();
+    if (App.celmco === 0) {
+      App.convertFromMediaContractualObjectsCel();
+    } else {
+      try {
+        const contr = App.editor22.getValue();
+
+        //const res2 = { contractIdref: 'cont-9ppXJE8Ct0T0gi_FK26Q4u' };
+        const res2 = await $.ajax({
+          type: 'POST',
+          url: 'https://scm.linkeddata.es/api/contracts/',
+          contentType: 'application/json; charset=UFT-8',
+          dataType: 'json',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          data: contr,
+        });
+        //console.log(res2);
+
+        const res3 = await $.ajax({
+          type: 'GET',
+          url: `https://scm.linkeddata.es/api/generator/mco/${res2.contractIdref}`,
+          crossDomain: true,
+          headers: {
+            Accept: 'text/plain',
+          },
+        });
+        //console.log(res3);
+
+        App.editor12.setValue(JSON.stringify(res3, null, 2));
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
 
@@ -511,65 +535,69 @@ App = {
   handleUpload: async function (event) {
     event.preventDefault();
 
-    document.getElementById('deploybtn').style.display = 'none';
-    const bindings = {};
-    for (
-      let i = 0;
-      i < document.getElementById('bindingsForm').childNodes.length;
-      i++
-    ) {
-      bindings[
-        document.getElementById('bindingsForm').childNodes[i].textContent
-      ] = document.getElementById('bindingsForm').elements[i].value;
-    }
+    if (App.celmco === 0) {
+      App.generateSCMDataCEL();
+    } else {
+      document.getElementById('deploybtn').style.display = 'none';
+      const bindings = {};
+      for (
+        let i = 0;
+        i < document.getElementById('bindingsForm').childNodes.length;
+        i++
+      ) {
+        bindings[
+          document.getElementById('bindingsForm').childNodes[i].textContent
+        ] = document.getElementById('bindingsForm').elements[i].value;
+      }
 
-    const mediaSC = JSON.parse(App.editor3.getValue());
+      const mediaSC = JSON.parse(App.editor3.getValue());
 
-    try {
-      $('#mcoup').text('Uploading Smart Contract...');
+      try {
+        $('#mcoup').text('Uploading Smart Contract...');
 
-      const networkId = await App.web3Provider.request({
-        method: 'net_version',
-      });
+        const networkId = await App.web3Provider.request({
+          method: 'net_version',
+        });
 
-      const ipfs = new SCM.OffChainStorage();
-      const deployer = new SCM.EthereumDeployer(
-        App.web3Provider,
-        ipfs,
-        mediaSC,
-        bindings,
-        networkId
-      );
-      await deployer.setMainAddress(0);
+        const ipfs = new SCM.OffChainStorage();
+        const deployer = new SCM.EthereumDeployer(
+          App.web3Provider,
+          ipfs,
+          mediaSC,
+          bindings,
+          networkId
+        );
+        await deployer.setMainAddress(0);
 
-      var old = console.log;
-      console.log = function (message) {
-        if (typeof message == 'object') {
-          App.editorLog1.setValue(
-            JSON && JSON.stringify ? JSON.stringify(message) : String(message)
-          );
-        } else {
-          App.editorLog1.setValue(message);
-        }
-      };
-      const res = await deployer.deploySmartContracts();
-      const contractAddress = res.options.address;
-      console.log = old;
-      console.log(contractAddress);
-      document.getElementById('deploybtn').style.display = 'block';
-      $('#mcoup').text('Deployed!');
-      $('#clinkMain').text(
-        'https://ropsten.etherscan.io/address/' + contractAddress
-      );
-      $('#clinkMain').attr(
-        'href',
-        'https://ropsten.etherscan.io/address/' + contractAddress
-      );
-      document.getElementById('scmaddr').value = contractAddress;
-      document.getElementById('nftaddr').value =
-        '0xAec959Fa5EbF6DCC505643502371e29D93C7a86b';
-    } catch (error) {
-      console.log(error);
+        var old = console.log;
+        console.log = function (message) {
+          if (typeof message == 'object') {
+            App.editorLog1.setValue(
+              JSON && JSON.stringify ? JSON.stringify(message) : String(message)
+            );
+          } else {
+            App.editorLog1.setValue(message);
+          }
+        };
+        const res = await deployer.deploySmartContracts();
+        const contractAddress = res.options.address;
+        console.log = old;
+        console.log(contractAddress);
+        document.getElementById('deploybtn').style.display = 'block';
+        $('#mcoup').text('Deployed!');
+        $('#clinkMain').text(
+          'https://ropsten.etherscan.io/address/' + contractAddress
+        );
+        $('#clinkMain').attr(
+          'href',
+          'https://ropsten.etherscan.io/address/' + contractAddress
+        );
+        document.getElementById('scmaddr').value = contractAddress;
+        document.getElementById('nftaddr').value =
+          '0xAec959Fa5EbF6DCC505643502371e29D93C7a86b';
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
 
@@ -642,38 +670,142 @@ App = {
     var data = await $.get(jsonFile);
     if (App.celmco === 0) {
       data = new XMLSerializer().serializeToString(data);
+      document.getElementById('convertotomcobtn2').style.display = 'none';
+      document.getElementById('convertotomcobtn2editor').style.display = 'none';
+      document.getElementById('incomes').style.display = 'none';
+      document.getElementById('toremovecel').style.display = 'none';
+      document.getElementById('toremovecel2').style.display = 'none';
+      document.getElementById('algobutton').style.display = 'none';
+      document.getElementById('tezosbutton').style.display = 'block';
+    } else {
+      document.getElementById('convertotomcobtn2').style.display = 'block';
+      document.getElementById('convertotomcobtn2editor').style.display =
+        'block';
+      document.getElementById('incomes').style.display = 'block';
+      document.getElementById('toremovecel').style.display = 'block';
+      document.getElementById('toremovecel2').style.display = 'block';
+      document.getElementById('algobutton').style.display = 'block';
+      document.getElementById('tezosbutton').style.display = 'none';
     }
     App.editor.setValue(data);
+
+    switch (App.ondemsale * 3 + App.label) {
+      case 0:
+        document.getElementById('linkuno').style.display = 'block';
+        document.getElementById('linkdue').style.display = 'none';
+        document.getElementById('linktre').style.display = 'none';
+        document.getElementById('linkquat').style.display = 'none';
+        document.getElementById('linkcin').style.display = 'none';
+        document.getElementById('linksei').style.display = 'none';
+        break;
+      case 1:
+        document.getElementById('linkuno').style.display = 'none';
+        document.getElementById('linkdue').style.display = 'block';
+        document.getElementById('linktre').style.display = 'none';
+        document.getElementById('linkquat').style.display = 'none';
+        document.getElementById('linkcin').style.display = 'none';
+        document.getElementById('linksei').style.display = 'none';
+        break;
+      case 2:
+        document.getElementById('linkuno').style.display = 'none';
+        document.getElementById('linkdue').style.display = 'none';
+        document.getElementById('linktre').style.display = 'block';
+        document.getElementById('linkquat').style.display = 'none';
+        document.getElementById('linkcin').style.display = 'none';
+        document.getElementById('linksei').style.display = 'none';
+        break;
+      case 3:
+        document.getElementById('linkuno').style.display = 'none';
+        document.getElementById('linkdue').style.display = 'none';
+        document.getElementById('linktre').style.display = 'none';
+        document.getElementById('linkquat').style.display = 'block';
+        document.getElementById('linkcin').style.display = 'none';
+        document.getElementById('linksei').style.display = 'none';
+        break;
+      case 4:
+        document.getElementById('linkuno').style.display = 'none';
+        document.getElementById('linkdue').style.display = 'none';
+        document.getElementById('linktre').style.display = 'none';
+        document.getElementById('linkquat').style.display = 'none';
+        document.getElementById('linkcin').style.display = 'block';
+        document.getElementById('linksei').style.display = 'none';
+        break;
+      case 5:
+        document.getElementById('linkuno').style.display = 'none';
+        document.getElementById('linkdue').style.display = 'none';
+        document.getElementById('linktre').style.display = 'none';
+        document.getElementById('linkquat').style.display = 'none';
+        document.getElementById('linkcin').style.display = 'none';
+        document.getElementById('linksei').style.display = 'block';
+        break;
+
+      default:
+        break;
+    }
   },
 
   setBlockchain: async function () {
+    document.getElementById('convertotomcobtn2').style.display = 'block';
+    document.getElementById('convertotomcobtn2editor').style.display = 'block';
+    document.getElementById('incomes').style.display = 'block';
+    document.getElementById('toremovecel').style.display = 'block';
+    document.getElementById('toremovecel2').style.display = 'block';
+    document.getElementById('templatesc').style.display = 'block';
+    document.getElementById('buttonsdepl').style.display = 'block';
+    document.getElementById('logscdep').style.display = 'block';
+    document.getElementById('resscdep').style.display = 'block';
+    document.getElementById('container_back').style.display = 'block';
     switch (App.blockchain) {
       case 0:
-        document.getElementById('ethereumDeploy').style.display = 'block';
-        document.getElementById('bindings').style.display = 'block';
         document.getElementById('deploybtn').style.display = 'block';
         document.getElementById('parsebtn').style.display = 'block';
         document.getElementById('deploybtn2').style.display = 'none';
         document.getElementById('algorandDeploy').style.display = 'none';
+        document.getElementById('tezosDeploy').style.display = 'none';
         document.getElementById('parsebtn2').style.display = 'none';
+        if (App.celmco === 0) {
+          document.getElementById('ethereumDeploy').style.display = 'none';
+          document.getElementById('ethereumDeployCel').style.display = 'block';
+          document.getElementById('bindings').style.display = 'none';
+        } else {
+          document.getElementById('ethereumDeploy').style.display = 'block';
+          document.getElementById('ethereumDeployCel').style.display = 'none';
+          document.getElementById('bindings').style.display = 'block';
+        }
         break;
       case 1:
         document.getElementById('ethereumDeploy').style.display = 'none';
+        document.getElementById('ethereumDeployCel').style.display = 'none';
         document.getElementById('bindings').style.display = 'none';
         document.getElementById('deploybtn').style.display = 'none';
         document.getElementById('parsebtn').style.display = 'none';
         document.getElementById('deploybtn2').style.display = 'block';
         document.getElementById('algorandDeploy').style.display = 'block';
+        document.getElementById('tezosDeploy').style.display = 'none';
         document.getElementById('parsebtn2').style.display = 'block';
         break;
       case 2:
-        document.getElementById('ethereumDeploy').style.display = 'block';
-        document.getElementById('bindings').style.display = 'block';
-        document.getElementById('deploybtn').style.display = 'block';
-        document.getElementById('parsebtn').style.display = 'block';
+        document.getElementById('ethereumDeploy').style.display = 'none';
+        document.getElementById('ethereumDeployCel').style.display = 'none';
+        document.getElementById('bindings').style.display = 'none';
+        document.getElementById('deploybtn').style.display = 'none';
+        document.getElementById('parsebtn').style.display = 'none';
         document.getElementById('deploybtn2').style.display = 'none';
         document.getElementById('algorandDeploy').style.display = 'none';
+        document.getElementById('tezosDeploy').style.display = 'block';
         document.getElementById('parsebtn2').style.display = 'none';
+        //
+        document.getElementById('convertotomcobtn2').style.display = 'none';
+        document.getElementById('convertotomcobtn2editor').style.display =
+          'none';
+        document.getElementById('incomes').style.display = 'none';
+        document.getElementById('toremovecel').style.display = 'none';
+        document.getElementById('toremovecel2').style.display = 'none';
+        document.getElementById('templatesc').style.display = 'none';
+        document.getElementById('buttonsdepl').style.display = 'none';
+        document.getElementById('logscdep').style.display = 'none';
+        document.getElementById('resscdep').style.display = 'none';
+        document.getElementById('container_back').style.display = 'none';
         break;
       default:
         break;
@@ -693,9 +825,11 @@ App = {
     switch (petId) {
       case 0:
         App.celmco = 0;
+        App.blockchain = App.blockchainTempCel;
         break;
       case 1:
         App.celmco = 1;
+        App.blockchain = App.blockchainTempMco;
         break;
       case 2:
         App.ondemsale = 0;
@@ -713,13 +847,28 @@ App = {
         App.label = 2;
         break;
       case 7:
+        if (App.celmco === 0) {
+          App.blockchainTempCel = 0;
+        } else {
+          App.blockchainTempMco = 0;
+        }
         App.blockchain = 0;
         break;
       case 8:
+        if (App.celmco === 0) {
+          App.blockchainTempCel = 1;
+        } else {
+          App.blockchainTempMco = 1;
+        }
         App.blockchain = 1;
         break;
       case 9:
-        App.blockchain = 0;
+        if (App.celmco === 0) {
+          App.blockchainTempCel = 2;
+        } else {
+          App.blockchainTempMco = 2;
+        }
+        App.blockchain = 2;
         break;
       default:
         break;
