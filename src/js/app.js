@@ -124,7 +124,7 @@ App = {
     App.editorLog1.setValue(
       'Click on Deploy, the progress will be shown here...'
     );
-    App.editorLog1.setSize(null, 30);
+    App.editorLog1.setSize(null, 120);
 
     App.editor2 = CodeMirror.fromTextArea(document.getElementById('editor2'), {
       lineNumbers: true,
@@ -267,9 +267,11 @@ App = {
 
   generateSCMDataCEL: async function () {
     try {
-      document.getElementById('deploybtn').style.display = 'block';
+      document.getElementById('deploybtn').style.display = 'none';
 
       await App.convertToMediaContractualObjectsCEL();
+
+      App.editorLog1.setValue('Uploading Smart Contract...');
 
       const reqData = App.editor.getValue();
       const res = await $.ajax({
@@ -451,7 +453,7 @@ App = {
         });
         //console.log(res3);
 
-        App.editor12.setValue(JSON.stringify(res3, null, 2));
+        App.editor12.setValue(res3);
       } catch (error) {
         console.log(error);
       }
